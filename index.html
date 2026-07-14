@@ -8,6 +8,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+/* Apply saved / system theme before first paint to avoid a flash */
+(function(){
+  var t = null;
+  try{ t = localStorage.getItem("qr-theme"); }catch(e){}
+  if(!t && window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches) t = "dark";
+  if(t === "dark") document.documentElement.setAttribute("data-theme","dark");
+})();
+</script>
 <style>
   :root{
     --paper:#F1F3F8;
@@ -20,9 +29,35 @@
     --accent-soft:#E7EBFE;
     --warn:#B4540A;
     --warn-soft:#FDEEDC;
+    --field:#FAFBFE;
+    --check:#E4E7F0;
     --radius:14px;
     --font-display:"Space Grotesk",system-ui,sans-serif;
     --font-mono:"Space Mono",ui-monospace,monospace;
+    color-scheme:light;
+  }
+  html[data-theme="dark"]{
+    --paper:#0D1020;
+    --panel:#161A2E;
+    --ink:#E9ECF8;
+    --ink-soft:#9AA3C0;
+    --line:#2B3152;
+    --accent:#6C83FF;
+    --accent-ink:#A9B6FF;
+    --accent-soft:#232B4E;
+    --warn:#F0A35C;
+    --warn-soft:#3A2A17;
+    --field:#0F1326;
+    --check:#262C48;
+    color-scheme:dark;
+  }
+  body,.panel,.tab,.btn,.seg button,.color-input,.logo-drop,
+  input[type=text],input[type=url],input[type=email],input[type=tel],textarea,select{
+    transition:background-color .2s ease,border-color .2s ease,color .2s ease;
+  }
+  @media (prefers-reduced-motion:reduce){
+    body,.panel,.tab,.btn,.seg button,.color-input,.logo-drop,
+    input[type=text],input[type=url],input[type=email],input[type=tel],textarea,select{transition:none}
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
@@ -52,6 +87,14 @@
   h1{font-size:1.35rem;font-weight:700;letter-spacing:-0.01em}
   h1 small{display:block;font-size:.78rem;font-weight:500;color:var(--ink-soft);letter-spacing:.02em}
   .header-note{font-family:var(--font-mono);font-size:.72rem;color:var(--ink-soft)}
+  .header-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .theme-toggle{
+    font:inherit;font-weight:600;font-size:.82rem;
+    padding:7px 14px;border-radius:999px;cursor:pointer;
+    border:1px solid var(--line);background:var(--panel);color:var(--ink);
+    display:inline-flex;align-items:center;gap:7px;
+  }
+  .theme-toggle:hover{border-color:var(--accent);color:var(--accent-ink)}
 
   /* ---------- Layout ---------- */
   main{
@@ -89,7 +132,7 @@
     cursor:pointer;
   }
   .tab:hover{border-color:var(--accent);color:var(--accent-ink)}
-  .tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+  .tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
 
   /* ---------- Fields ---------- */
   .field{margin-bottom:12px}
@@ -101,7 +144,7 @@
     font:inherit;font-size:.92rem;
     padding:9px 12px;
     border:1px solid var(--line);border-radius:9px;
-    background:#FAFBFE;color:var(--ink);
+    background:var(--field);color:var(--ink);
   }
   textarea{resize:vertical;min-height:74px}
   input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-visible,input[type=range]:focus-visible{
@@ -127,7 +170,7 @@
   @media (max-width:480px){.color-grid{grid-template-columns:1fr}}
   .color-input{
     display:flex;align-items:center;gap:10px;
-    border:1px solid var(--line);border-radius:9px;padding:6px 10px;background:#FAFBFE;
+    border:1px solid var(--line);border-radius:9px;padding:6px 10px;background:var(--field);
   }
   .color-input input[type=color]{
     width:34px;height:34px;border:none;border-radius:7px;padding:0;background:none;cursor:pointer;flex:none;
@@ -160,7 +203,7 @@
   .logo-drop{
     border:1.5px dashed var(--line);border-radius:10px;
     padding:16px;text-align:center;cursor:pointer;
-    color:var(--ink-soft);font-size:.86rem;background:#FAFBFE;
+    color:var(--ink-soft);font-size:.86rem;background:var(--field);
   }
   .logo-drop:hover,.logo-drop.dragover{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-soft)}
   .logo-drop img{max-width:56px;max-height:56px;display:block;margin:0 auto 8px;border-radius:8px}
@@ -190,8 +233,8 @@
   }
   .canvas-wrap.transparent{
     background-image:
-      linear-gradient(45deg,#E4E7F0 25%,transparent 25%,transparent 75%,#E4E7F0 75%),
-      linear-gradient(45deg,#E4E7F0 25%,transparent 25%,transparent 75%,#E4E7F0 75%);
+      linear-gradient(45deg,var(--check) 25%,transparent 25%,transparent 75%,var(--check) 75%),
+      linear-gradient(45deg,var(--check) 25%,transparent 25%,transparent 75%,var(--check) 75%);
     background-size:18px 18px;background-position:0 0,9px 9px;
   }
   #qrCanvas{width:100%;height:auto;display:block}
@@ -253,7 +296,10 @@
     </div>
     <h1>Quiet Response<small>QR code generator — free, private, in-browser</small></h1>
   </div>
-  <div class="header-note">no server · no tracking · nothing leaves this page</div>
+  <div class="header-right">
+    <span class="header-note">no server · no tracking · nothing leaves this page</span>
+    <button class="theme-toggle" id="themeToggle" aria-pressed="false" aria-label="Switch to dark theme">☾ Dark</button>
+  </div>
 </header>
 
 <main>
@@ -504,6 +550,24 @@
   const $ = id => document.getElementById(id);
   const canvas = $("qrCanvas");
   const ctx = canvas.getContext("2d");
+
+  /* ---------------- Theme toggle ---------------- */
+  const themeBtn = $("themeToggle");
+  function applyTheme(t){
+    const dark = t === "dark";
+    if(dark) document.documentElement.setAttribute("data-theme","dark");
+    else document.documentElement.removeAttribute("data-theme");
+    themeBtn.setAttribute("aria-pressed", dark);
+    themeBtn.textContent = dark ? "☀ Light" : "☾ Dark";
+    themeBtn.setAttribute("aria-label", dark ? "Switch to light theme" : "Switch to dark theme");
+  }
+  let theme = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+  applyTheme(theme);
+  themeBtn.addEventListener("click", () => {
+    theme = theme === "dark" ? "light" : "dark";
+    applyTheme(theme);
+    try{ localStorage.setItem("qr-theme", theme); }catch(e){}
+  });
 
   /* ---------------- Payload builders ---------------- */
   const wifiEscape = s => s.replace(/([\\;,:"'])/g, "\\$1");
