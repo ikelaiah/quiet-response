@@ -473,6 +473,26 @@
     </section>
 
     <section class="panel">
+      <h2>Frame</h2>
+      <label class="checkline"><input type="checkbox" id="frameOn"> Add a colored frame with a label</label>
+      <div id="frameFields" hidden>
+        <div class="row" style="margin-top:12px">
+          <div class="field">
+            <label for="frameColor">Frame color</label>
+            <div class="color-input">
+              <input type="color" id="frameColor" value="#2B4BF2" aria-label="Frame color">
+              <div><div class="role">Frame</div><div class="hexval" id="frameHex">#2B4BF2</div></div>
+            </div>
+          </div>
+          <div class="field">
+            <label for="frameLabel">Label text <span class="hint">(shown under the code)</span></label>
+            <input type="text" id="frameLabel" value="SCAN ME" maxlength="40" placeholder="SCAN ME">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
       <h2>Output</h2>
       <div class="slider-field">
         <label for="qrSize">Image size</label>
@@ -544,7 +564,10 @@
     ec: "M",
     logoImg: null,
     logoSize: 20,
-    logoPad: true
+    logoPad: true,
+    frameOn: false,
+    frameColor: "#2B4BF2",
+    frameLabel: "SCAN ME"
   };
 
   const $ = id => document.getElementById(id);
@@ -650,15 +673,32 @@
     return units * 0.3;
   }
 
+  /* ---------------- Layout (frame-aware) ---------------- */
+  function getLayout(){
+    const S = state.size;
+    if(!state.frameOn) return {W: S, H: S, qx: 0, qy: 0, qs: S, b: 0, labelH: 0, label: ""};
+    const b = Math.round(S * 0.05);
+    const label = state.frameLabel.trim();
+    const labelH = label ? Math.round(S * 0.16) : b;
+    const qs = S - 2 * b;
+    return {W: S, H: b + qs + labelH, qx: b, qy: b, qs, b, labelH, label};
+  }
+  function frameTextColor(){
+    return luminance(state.frameColor) > 0.35 ? "#10142A" : "#FFFFFF";
+  }
+
   /* ---------------- Canvas rendering ---------------- */
+  const qrLayer = document.createElement("canvas"); // QR drawn here first so transparency punch-outs work
+
   function render(){
     const payload = buildPayload();
     const err = buildQr(payload);
     const errBox = $("noticeError");
+    const L = getLayout();
 
-    canvas.width = state.size;
-    canvas.height = state.size;
-    ctx.clearRect(0, 0, state.size, state.size);
+    canvas.width = L.W;
+    canvas.height = L.H;
+    ctx.clearRect(0, 0, L.W, L.H);
 
     if(err){
       errBox.textContent = err;
@@ -672,27 +712,61 @@
     errBox.classList.remove("show");
     setButtons(true);
 
+    // Frame background
+    if(state.frameOn){
+      const fp = new Path2D();
+      roundedRectPath(fp, 0, 0, L.W, L.H, state.size * 0.045);
+      ctx.fillStyle = state.frameColor;
+      ctx.fill(fp);
+    }
+
+    // QR code onto its own layer, then composited into place
+    qrLayer.width = qrLayer.height = L.qs;
+    drawQrLayer(qrLayer.getContext("2d"), L.qs);
+    ctx.drawImage(qrLayer, L.qx, L.qy);
+
+    // Label text under the code
+    if(state.frameOn && L.label){
+      const fontPx = Math.round(L.labelH * 0.42);
+      ctx.font = "700 " + fontPx + "px 'Space Grotesk', system-ui, sans-serif";
+      ctx.fillStyle = frameTextColor();
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(L.label, L.W / 2, L.qy + L.qs + L.labelH / 2, L.W - L.b * 2);
+    }
+
+    // Meta + hints
+    const n = qr.getModuleCount();
+    $("metaModules").textContent = n + " × " + n + " modules";
+    $("metaVersion").textContent = "version " + ((n - 17) / 4) + " · EC " + state.ec;
+    $("metaChars").textContent = payload.length + " chars";
+    updateHints();
+  }
+
+  function drawQrLayer(g, S){
     const n = qr.getModuleCount();
     const total = n + state.quiet * 2;
-    const m = state.size / total;           // module size in px
-    const off = state.quiet * m;            // quiet-zone offset
+    const m = S / total;           // module size in px
+    const off = state.quiet * m;   // quiet-zone offset
+
+    g.clearRect(0, 0, S, S);
 
     // Background
     if(!state.transparent){
-      ctx.fillStyle = state.bg;
-      ctx.fillRect(0, 0, state.size, state.size);
+      g.fillStyle = state.bg;
+      g.fillRect(0, 0, S, S);
     }
 
     // Foreground fill (solid or gradient)
     let fill;
     if(state.gradient){
-      fill = ctx.createLinearGradient(0, 0, state.size, state.size);
+      fill = g.createLinearGradient(0, 0, S, S);
       fill.addColorStop(0, state.fg);
       fill.addColorStop(1, state.fg2);
     }else{
       fill = state.fg;
     }
-    ctx.fillStyle = fill;
+    g.fillStyle = fill;
 
     // Body modules
     const body = new Path2D();
@@ -710,7 +784,7 @@
         }
       }
     }
-    ctx.fill(body);
+    g.fill(body);
 
     // Finder eyes (drawn as ring + pupil so they can be styled)
     const eyes = [[0, 0], [n - 7, 0], [0, n - 7]]; // [col, row]
@@ -719,57 +793,51 @@
       // outer 7×7
       const outer = new Path2D();
       roundedRectPath(outer, x, y, 7 * m, 7 * m, eyeRadius(7) * m);
-      ctx.fillStyle = fill;
-      ctx.fill(outer);
+      g.fillStyle = fill;
+      g.fill(outer);
       // inner 5×5 punched in background
       const mid = new Path2D();
       roundedRectPath(mid, x + m, y + m, 5 * m, 5 * m, eyeRadius(5) * m);
       if(state.transparent){
-        ctx.save();
-        ctx.globalCompositeOperation = "destination-out";
-        ctx.fill(mid);
-        ctx.restore();
+        g.save();
+        g.globalCompositeOperation = "destination-out";
+        g.fill(mid);
+        g.restore();
       }else{
-        ctx.fillStyle = state.bg;
-        ctx.fill(mid);
+        g.fillStyle = state.bg;
+        g.fill(mid);
       }
       // pupil 3×3
       const pupil = new Path2D();
       roundedRectPath(pupil, x + 2 * m, y + 2 * m, 3 * m, 3 * m, eyeRadius(3) * m);
-      ctx.fillStyle = fill;
-      ctx.fill(pupil);
+      g.fillStyle = fill;
+      g.fill(pupil);
     }
 
     // Logo
     if(state.logoImg){
       const codePx = n * m;
       const lw = codePx * (state.logoSize / 100);
-      const lx = (state.size - lw) / 2, ly = (state.size - lw) / 2;
+      const lx = (S - lw) / 2, ly = (S - lw) / 2;
       if(state.logoPad){
         const pad = lw * 0.12;
         const p = new Path2D();
         roundedRectPath(p, lx - pad, ly - pad, lw + pad * 2, lw + pad * 2, (lw + pad * 2) * 0.18);
         if(state.transparent){
-          ctx.save();
-          ctx.globalCompositeOperation = "destination-out";
-          ctx.fill(p);
-          ctx.restore();
+          g.save();
+          g.globalCompositeOperation = "destination-out";
+          g.fill(p);
+          g.restore();
         }else{
-          ctx.fillStyle = state.bg;
-          ctx.fill(p);
+          g.fillStyle = state.bg;
+          g.fill(p);
         }
       }
       const ratio = state.logoImg.naturalWidth / state.logoImg.naturalHeight || 1;
       let dw = lw, dh = lw;
       if(ratio > 1) dh = lw / ratio; else dw = lw * ratio;
-      ctx.drawImage(state.logoImg, lx + (lw - dw) / 2, ly + (lw - dh) / 2, dw, dh);
+      g.drawImage(state.logoImg, lx + (lw - dw) / 2, ly + (lw - dh) / 2, dw, dh);
     }
-
-    // Meta + hints
-    $("metaModules").textContent = n + " × " + n + " modules";
-    $("metaVersion").textContent = "version " + ((n - 17) / 4) + " · EC " + state.ec;
-    $("metaChars").textContent = payload.length + " chars";
-    updateHints();
   }
 
   function setButtons(on){
@@ -812,20 +880,26 @@
   }
   function buildSvg(){
     if(!qr) return null;
+    const L = getLayout();
     const n = qr.getModuleCount();
-    const S = state.size;
+    const S = L.qs;
     const total = n + state.quiet * 2;
     const m = S / total;
     const off = state.quiet * m;
     const parts = [];
-    parts.push('<svg xmlns="http://www.w3.org/2000/svg" width="' + S + '" height="' + S + '" viewBox="0 0 ' + S + ' ' + S + '">');
+    parts.push('<svg xmlns="http://www.w3.org/2000/svg" width="' + L.W + '" height="' + L.H + '" viewBox="0 0 ' + L.W + ' ' + L.H + '">');
     if(state.gradient){
-      parts.push('<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+      parts.push('<defs><linearGradient id="g" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="' + S + '" y2="' + S + '">' +
         '<stop offset="0" stop-color="' + state.fg + '"/><stop offset="1" stop-color="' + state.fg2 + '"/>' +
         '</linearGradient></defs>');
     }
-    if(!state.transparent) parts.push('<rect width="' + S + '" height="' + S + '" fill="' + state.bg + '"/>');
+    if(state.frameOn){
+      parts.push('<rect width="' + L.W + '" height="' + L.H + '" rx="' + (state.size * 0.045).toFixed(2) + '" fill="' + state.frameColor + '"/>');
+    }
     const fgRef = state.gradient ? 'url(#g)' : state.fg;
+
+    parts.push('<g transform="translate(' + L.qx + ' ' + L.qy + ')">');
+    if(!state.transparent) parts.push('<rect width="' + S + '" height="' + S + '" fill="' + state.bg + '"/>');
 
     parts.push('<g fill="' + fgRef + '">');
     for(let r = 0; r < n; r++){
@@ -871,8 +945,19 @@
       parts.push('<image href="' + tmp.toDataURL("image/png") + '" x="' + (lx + (lw - dw) / 2).toFixed(2) +
         '" y="' + (ly + (lw - dh) / 2).toFixed(2) + '" width="' + dw.toFixed(2) + '" height="' + dh.toFixed(2) + '"/>');
     }
+    parts.push('</g>');
+
+    if(state.frameOn && L.label){
+      const fontPx = Math.round(L.labelH * 0.42);
+      parts.push('<text x="' + (L.W / 2) + '" y="' + (L.qy + L.qs + L.labelH / 2) +
+        '" fill="' + frameTextColor() + '" font-family="Space Grotesk, system-ui, sans-serif" font-weight="700"' +
+        ' font-size="' + fontPx + '" text-anchor="middle" dominant-baseline="central">' + escapeXml(L.label) + '</text>');
+    }
     parts.push('</svg>');
     return parts.join("");
+  }
+  function escapeXml(s){
+    return s.replace(/[<>&"']/g, c => ({"<":"&lt;", ">":"&gt;", "&":"&amp;", '"':"&quot;", "'":"&#39;"}[c]));
   }
   function roundedRectD(x, y, w, h, r){
     r = Math.min(r, w / 2, h / 2);
@@ -981,6 +1066,15 @@
     render();
   });
   $("logoPad").addEventListener("change", e => { state.logoPad = e.target.checked; render(); });
+
+  // Frame
+  $("frameOn").addEventListener("change", e => {
+    state.frameOn = e.target.checked;
+    $("frameFields").hidden = !state.frameOn;
+    render();
+  });
+  $("frameLabel").addEventListener("input", e => { state.frameLabel = e.target.value; render(); });
+  bindColor("frameColor", "frameHex", "frameColor");
 
   // Segmented controls
   function bindSeg(id, key){
