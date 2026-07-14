@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quiet Response — QR Code Generator</title>
 <meta name="description" content="A free, single-file QR code generator. Custom colors, module shapes, logos, gradients, PNG & SVG export. No tracking, no server — everything happens in your browser.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<!-- qrcode-generator 1.4.4 is embedded below so this file works completely offline. -->
+<script id="qr-library">
+var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=new Array(t),e=0;e<t;e+=1){r[e]=new Array(t);for(var n=0;n<t;n+=1)r[e][n]=null}return r}(l=4*u+17),e(0,0),e(l-7,0),e(0,l-7),i(),o(),v(t,r),7<=u&&h(t),null==n&&(n=w(u,f,c)),d(n,r)}var u=t,f=y[r],g=null,l=0,n=null,c=[],s={},e=function(t,r){for(var e=-1;e<=7;e+=1)if(!(t+e<=-1||l<=t+e))for(var n=-1;n<=7;n+=1)r+n<=-1||l<=r+n||(g[t+e][r+n]=0<=e&&e<=6&&(0==n||6==n)||0<=n&&n<=6&&(0==e||6==e)||2<=e&&e<=4&&2<=n&&n<=4)},o=function(){for(var t=8;t<l-8;t+=1)null==g[t][6]&&(g[t][6]=t%2==0);for(var r=8;r<l-8;r+=1)null==g[6][r]&&(g[6][r]=r%2==0)},i=function(){for(var t=B.getPatternPosition(u),r=0;r<t.length;r+=1)for(var e=0;e<t.length;e+=1){var n=t[r],o=t[e];if(null==g[n][o])for(var i=-2;i<=2;i+=1)for(var a=-2;a<=2;a+=1)g[n+i][o+a]=-2==i||2==i||-2==a||2==a||0==i&&0==a}},h=function(t){for(var r=B.getBCHTypeNumber(u),e=0;e<18;e+=1){var n=!t&&1==(r>>e&1);g[Math.floor(e/3)][e%3+l-8-3]=n}for(e=0;e<18;e+=1){n=!t&&1==(r>>e&1);g[e%3+l-8-3][Math.floor(e/3)]=n}},v=function(t,r){for(var e=f<<3|r,n=B.getBCHTypeInfo(e),o=0;o<15;o+=1){var i=!t&&1==(n>>o&1);o<6?g[o][8]=i:o<8?g[o+1][8]=i:g[l-15+o][8]=i}for(o=0;o<15;o+=1){i=!t&&1==(n>>o&1);o<8?g[8][l-o-1]=i:o<9?g[8][15-o-1+1]=i:g[8][15-o-1]=i}g[l-8][8]=!t},d=function(t,r){for(var e=-1,n=l-1,o=7,i=0,a=B.getMaskFunction(r),u=l-1;0<u;u-=2)for(6==u&&(u-=1);;){for(var f=0;f<2;f+=1)if(null==g[n][u-f]){var c=!1;i<t.length&&(c=1==(t[i]>>>o&1)),a(n,u-f)&&(c=!c),g[n][u-f]=c,-1==(o-=1)&&(i+=1,o=7)}if((n+=e)<0||l<=n){n-=e,e=-e;break}}},w=function(t,r,e){for(var n=b.getRSBlocks(t,r),o=M(),i=0;i<e.length;i+=1){var a=e[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var u=0;for(i=0;i<n.length;i+=1)u+=n[i].dataCount;if(o.getLengthInBits()>8*u)throw"code length overflow. ("+o.getLengthInBits()+">"+8*u+")";for(o.getLengthInBits()+4<=8*u&&o.put(0,4);o.getLengthInBits()%8!=0;)o.putBit(!1);for(;!(o.getLengthInBits()>=8*u||(o.put(236,8),o.getLengthInBits()>=8*u));)o.put(17,8);return function(t,r){for(var e=0,n=0,o=0,i=new Array(r.length),a=new Array(r.length),u=0;u<r.length;u+=1){var f=r[u].dataCount,c=r[u].totalCount-f;n=Math.max(n,f),o=Math.max(o,c),i[u]=new Array(f);for(var g=0;g<i[u].length;g+=1)i[u][g]=255&t.getBuffer()[g+e];e+=f;var l=B.getErrorCorrectPolynomial(c),h=C(i[u],l.getLength()-1).mod(l);a[u]=new Array(l.getLength()-1);for(g=0;g<a[u].length;g+=1){var s=g+h.getLength()-a[u].length;a[u][g]=0<=s?h.getAt(s):0}}var v=0;for(g=0;g<r.length;g+=1)v+=r[g].totalCount;var d=new Array(v),w=0;for(g=0;g<n;g+=1)for(u=0;u<r.length;u+=1)g<i[u].length&&(d[w]=i[u][g],w+=1);for(g=0;g<o;g+=1)for(u=0;u<r.length;u+=1)g<a[u].length&&(d[w]=a[u][g],w+=1);return d}(o,n)};s.addData=function(t,r){var e=null;switch(r=r||"Byte"){case"Numeric":e=x(t);break;case"Alphanumeric":e=m(t);break;case"Byte":e=L(t);break;case"Kanji":e=D(t);break;default:throw"mode:"+r}c.push(e),n=null},s.isDark=function(t,r){if(t<0||l<=t||r<0||l<=r)throw t+","+r;return g[t][r]},s.getModuleCount=function(){return l},s.make=function(){if(u<1){for(var t=1;t<40;t++){for(var r=b.getRSBlocks(t,f),e=M(),n=0;n<c.length;n++){var o=c[n];e.put(o.getMode(),4),e.put(o.getLength(),B.getLengthInBits(o.getMode(),t)),o.write(e)}var i=0;for(n=0;n<r.length;n++)i+=r[n].dataCount;if(e.getLengthInBits()<=8*i)break}u=t}a(!1,function(){for(var t=0,r=0,e=0;e<8;e+=1){a(!0,e);var n=B.getLostPoint(s);(0==e||n<t)&&(t=n,r=e)}return r}())},s.createTableTag=function(t,r){t=t||2;var e="";e+='<table style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: "+(r=void 0===r?4*t:r)+"px;",e+='">',e+="<tbody>";for(var n=0;n<s.getModuleCount();n+=1){e+="<tr>";for(var o=0;o<s.getModuleCount();o+=1)e+='<td style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: 0px;",e+=" width: "+t+"px;",e+=" height: "+t+"px;",e+=" background-color: ",e+=s.isDark(n,o)?"#000000":"#ffffff",e+=";",e+='"/>';e+="</tr>"}return e+="</tbody>",e+="</table>"},s.createSvgTag=function(t,r,e,n){var o={};"object"==typeof t&&(t=(o=t).cellSize,r=o.margin,e=o.alt,n=o.title),t=t||2,r=void 0===r?4*t:r,(e="string"==typeof e?{text:e}:e||{}).text=e.text||null,e.id=e.text?e.id||"qrcode-description":null,(n="string"==typeof n?{text:n}:n||{}).text=n.text||null,n.id=n.text?n.id||"qrcode-title":null;var i,a,u,f,c=s.getModuleCount()*t+2*r,g="";for(f="l"+t+",0 0,"+t+" -"+t+",0 0,-"+t+"z ",g+='<svg version="1.1" xmlns="http://www.w3.org/2000/svg"',g+=o.scalable?"":' width="'+c+'px" height="'+c+'px"',g+=' viewBox="0 0 '+c+" "+c+'" ',g+=' preserveAspectRatio="xMinYMin meet"',g+=n.text||e.text?' role="img" aria-labelledby="'+p([n.id,e.id].join(" ").trim())+'"':"",g+=">",g+=n.text?'<title id="'+p(n.id)+'">'+p(n.text)+"</title>":"",g+=e.text?'<description id="'+p(e.id)+'">'+p(e.text)+"</description>":"",g+='<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>',g+='<path d="',a=0;a<s.getModuleCount();a+=1)for(u=a*t+r,i=0;i<s.getModuleCount();i+=1)s.isDark(a,i)&&(g+="M"+(i*t+r)+","+u+f);return g+='" stroke="transparent" fill="black"/>',g+="</svg>"},s.createDataURL=function(o,t){o=o||2,t=void 0===t?4*o:t;var r=s.getModuleCount()*o+2*t,i=t,a=r-t;return I(r,r,function(t,r){if(i<=t&&t<a&&i<=r&&r<a){var e=Math.floor((t-i)/o),n=Math.floor((r-i)/o);return s.isDark(n,e)?0:1}return 1})},s.createImgTag=function(t,r,e){t=t||2,r=void 0===r?4*t:r;var n=s.getModuleCount()*t+2*r,o="";return o+="<img",o+=' src="',o+=s.createDataURL(t,r),o+='"',o+=' width="',o+=n,o+='"',o+=' height="',o+=n,o+='"',e&&(o+=' alt="',o+=p(e),o+='"'),o+="/>"};var p=function(t){for(var r="",e=0;e<t.length;e+=1){var n=t.charAt(e);switch(n){case"<":r+="&lt;";break;case">":r+="&gt;";break;case"&":r+="&amp;";break;case'"':r+="&quot;";break;default:r+=n}}return r};return s.createASCII=function(t,r){if((t=t||1)<2)return function(t){t=void 0===t?2:t;var r,e,n,o,i,a=1*s.getModuleCount()+2*t,u=t,f=a-t,c={"██":"█","█ ":"▀"," █":"▄","  ":" "},g={"██":"▀","█ ":"▀"," █":" ","  ":" "},l="";for(r=0;r<a;r+=2){for(n=Math.floor((r-u)/1),o=Math.floor((r+1-u)/1),e=0;e<a;e+=1)i="█",u<=e&&e<f&&u<=r&&r<f&&s.isDark(n,Math.floor((e-u)/1))&&(i=" "),u<=e&&e<f&&u<=r+1&&r+1<f&&s.isDark(o,Math.floor((e-u)/1))?i+=" ":i+="█",l+=t<1&&f<=r+1?g[i]:c[i];l+="\n"}return a%2&&0<t?l.substring(0,l.length-a-1)+Array(1+a).join("▀"):l.substring(0,l.length-1)}(r);t-=1,r=void 0===r?2*t:r;var e,n,o,i,a=s.getModuleCount()*t+2*r,u=r,f=a-r,c=Array(t+1).join("██"),g=Array(t+1).join("  "),l="",h="";for(e=0;e<a;e+=1){for(o=Math.floor((e-u)/t),h="",n=0;n<a;n+=1)i=1,u<=n&&n<f&&u<=e&&e<f&&s.isDark(o,Math.floor((n-u)/t))&&(i=0),h+=i?c:g;for(o=0;o<t;o+=1)l+=h+"\n"}return l.substring(0,l.length-1)},s.renderTo2dContext=function(t,r){r=r||2;for(var e=s.getModuleCount(),n=0;n<e;n++)for(var o=0;o<e;o++)t.fillStyle=s.isDark(n,o)?"black":"white",t.fillRect(n*r,o*r,r,r)},s}i.stringToBytes=(i.stringToBytesFuncs={default:function(t){for(var r=[],e=0;e<t.length;e+=1){var n=t.charCodeAt(e);r.push(255&n)}return r}}).default,i.createStringToBytes=function(u,f){var i=function(){function t(){var t=r.read();if(-1==t)throw"eof";return t}for(var r=S(u),e=0,n={};;){var o=r.read();if(-1==o)break;var i=t(),a=t()<<8|t();n[String.fromCharCode(o<<8|i)]=a,e+=1}if(e!=f)throw e+" != "+f;return n}(),a="?".charCodeAt(0);return function(t){for(var r=[],e=0;e<t.length;e+=1){var n=t.charCodeAt(e);if(n<128)r.push(n);else{var o=i[t.charAt(e)];"number"==typeof o?(255&o)==o?r.push(o):(r.push(o>>>8),r.push(255&o)):r.push(a)}}return r}};var r,t,a=1,u=2,o=4,f=8,y={L:1,M:0,Q:3,H:2},e=0,n=1,c=2,g=3,l=4,h=5,s=6,v=7,B=(r=[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],(t={}).getBCHTypeInfo=function(t){for(var r=t<<10;0<=d(r)-d(1335);)r^=1335<<d(r)-d(1335);return 21522^(t<<10|r)},t.getBCHTypeNumber=function(t){for(var r=t<<12;0<=d(r)-d(7973);)r^=7973<<d(r)-d(7973);return t<<12|r},t.getPatternPosition=function(t){return r[t-1]},t.getMaskFunction=function(t){switch(t){case e:return function(t,r){return(t+r)%2==0};case n:return function(t,r){return t%2==0};case c:return function(t,r){return r%3==0};case g:return function(t,r){return(t+r)%3==0};case l:return function(t,r){return(Math.floor(t/2)+Math.floor(r/3))%2==0};case h:return function(t,r){return t*r%2+t*r%3==0};case s:return function(t,r){return(t*r%2+t*r%3)%2==0};case v:return function(t,r){return(t*r%3+(t+r)%2)%2==0};default:throw"bad maskPattern:"+t}},t.getErrorCorrectPolynomial=function(t){for(var r=C([1],0),e=0;e<t;e+=1)r=r.multiply(C([1,w.gexp(e)],0));return r},t.getLengthInBits=function(t,r){if(1<=r&&r<10)switch(t){case a:return 10;case u:return 9;case o:case f:return 8;default:throw"mode:"+t}else if(r<27)switch(t){case a:return 12;case u:return 11;case o:return 16;case f:return 10;default:throw"mode:"+t}else{if(!(r<41))throw"type:"+r;switch(t){case a:return 14;case u:return 13;case o:return 16;case f:return 12;default:throw"mode:"+t}}},t.getLostPoint=function(t){for(var r=t.getModuleCount(),e=0,n=0;n<r;n+=1)for(var o=0;o<r;o+=1){for(var i=0,a=t.isDark(n,o),u=-1;u<=1;u+=1)if(!(n+u<0||r<=n+u))for(var f=-1;f<=1;f+=1)o+f<0||r<=o+f||0==u&&0==f||a==t.isDark(n+u,o+f)&&(i+=1);5<i&&(e+=3+i-5)}for(n=0;n<r-1;n+=1)for(o=0;o<r-1;o+=1){var c=0;t.isDark(n,o)&&(c+=1),t.isDark(n+1,o)&&(c+=1),t.isDark(n,o+1)&&(c+=1),t.isDark(n+1,o+1)&&(c+=1),0!=c&&4!=c||(e+=3)}for(n=0;n<r;n+=1)for(o=0;o<r-6;o+=1)t.isDark(n,o)&&!t.isDark(n,o+1)&&t.isDark(n,o+2)&&t.isDark(n,o+3)&&t.isDark(n,o+4)&&!t.isDark(n,o+5)&&t.isDark(n,o+6)&&(e+=40);for(o=0;o<r;o+=1)for(n=0;n<r-6;n+=1)t.isDark(n,o)&&!t.isDark(n+1,o)&&t.isDark(n+2,o)&&t.isDark(n+3,o)&&t.isDark(n+4,o)&&!t.isDark(n+5,o)&&t.isDark(n+6,o)&&(e+=40);var g=0;for(o=0;o<r;o+=1)for(n=0;n<r;n+=1)t.isDark(n,o)&&(g+=1);return e+=Math.abs(100*g/r/r-50)/5*10},t);function d(t){for(var r=0;0!=t;)r+=1,t>>>=1;return r}var w=function(){for(var r=new Array(256),e=new Array(256),t=0;t<8;t+=1)r[t]=1<<t;for(t=8;t<256;t+=1)r[t]=r[t-4]^r[t-5]^r[t-6]^r[t-8];for(t=0;t<255;t+=1)e[r[t]]=t;var n={glog:function(t){if(t<1)throw"glog("+t+")";return e[t]},gexp:function(t){for(;t<0;)t+=255;for(;256<=t;)t-=255;return r[t]}};return n}();function C(n,o){if(void 0===n.length)throw n.length+"/"+o;var r=function(){for(var t=0;t<n.length&&0==n[t];)t+=1;for(var r=new Array(n.length-t+o),e=0;e<n.length-t;e+=1)r[e]=n[e+t];return r}(),i={getAt:function(t){return r[t]},getLength:function(){return r.length},multiply:function(t){for(var r=new Array(i.getLength()+t.getLength()-1),e=0;e<i.getLength();e+=1)for(var n=0;n<t.getLength();n+=1)r[e+n]^=w.gexp(w.glog(i.getAt(e))+w.glog(t.getAt(n)));return C(r,0)},mod:function(t){if(i.getLength()-t.getLength()<0)return i;for(var r=w.glog(i.getAt(0))-w.glog(t.getAt(0)),e=new Array(i.getLength()),n=0;n<i.getLength();n+=1)e[n]=i.getAt(n);for(n=0;n<t.getLength();n+=1)e[n]^=w.gexp(w.glog(t.getAt(n))+r);return C(e,0).mod(t)}};return i}function p(){var e=[],o={writeByte:function(t){e.push(255&t)},writeShort:function(t){o.writeByte(t),o.writeByte(t>>>8)},writeBytes:function(t,r,e){r=r||0,e=e||t.length;for(var n=0;n<e;n+=1)o.writeByte(t[n+r])},writeString:function(t){for(var r=0;r<t.length;r+=1)o.writeByte(t.charCodeAt(r))},toByteArray:function(){return e},toString:function(){var t="";t+="[";for(var r=0;r<e.length;r+=1)0<r&&(t+=","),t+=e[r];return t+="]"}};return o}var k,A,b=(k=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12,7,37,13],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],(A={}).getRSBlocks=function(t,r){var e=function(t,r){switch(r){case y.L:return k[4*(t-1)+0];case y.M:return k[4*(t-1)+1];case y.Q:return k[4*(t-1)+2];case y.H:return k[4*(t-1)+3];default:return}}(t,r);if(void 0===e)throw"bad rs block @ typeNumber:"+t+"/errorCorrectionLevel:"+r;for(var n,o,i=e.length/3,a=[],u=0;u<i;u+=1)for(var f=e[3*u+0],c=e[3*u+1],g=e[3*u+2],l=0;l<f;l+=1)a.push((n=g,o=void 0,(o={}).totalCount=c,o.dataCount=n,o));return a},A),M=function(){var e=[],n=0,o={getBuffer:function(){return e},getAt:function(t){var r=Math.floor(t/8);return 1==(e[r]>>>7-t%8&1)},put:function(t,r){for(var e=0;e<r;e+=1)o.putBit(1==(t>>>r-e-1&1))},getLengthInBits:function(){return n},putBit:function(t){var r=Math.floor(n/8);e.length<=r&&e.push(0),t&&(e[r]|=128>>>n%8),n+=1}};return o},x=function(t){var r=a,n=t,e={getMode:function(){return r},getLength:function(t){return n.length},write:function(t){for(var r=n,e=0;e+2<r.length;)t.put(o(r.substring(e,e+3)),10),e+=3;e<r.length&&(r.length-e==1?t.put(o(r.substring(e,e+1)),4):r.length-e==2&&t.put(o(r.substring(e,e+2)),7))}},o=function(t){for(var r=0,e=0;e<t.length;e+=1)r=10*r+i(t.charAt(e));return r},i=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);throw"illegal char :"+t};return e},m=function(t){var r=u,n=t,e={getMode:function(){return r},getLength:function(t){return n.length},write:function(t){for(var r=n,e=0;e+1<r.length;)t.put(45*o(r.charAt(e))+o(r.charAt(e+1)),11),e+=2;e<r.length&&t.put(o(r.charAt(e)),6)}},o=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);if("A"<=t&&t<="Z")return t.charCodeAt(0)-"A".charCodeAt(0)+10;switch(t){case" ":return 36;case"$":return 37;case"%":return 38;case"*":return 39;case"+":return 40;case"-":return 41;case".":return 42;case"/":return 43;case":":return 44;default:throw"illegal char :"+t}};return e},L=function(t){var r=o,e=i.stringToBytes(t),n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=0;r<e.length;r+=1)t.put(e[r],8)}};return n},D=function(t){var r=f,e=i.stringToBytesFuncs.SJIS;if(!e)throw"sjis not supported.";!function(){var t=e("友");if(2!=t.length||38726!=(t[0]<<8|t[1]))throw"sjis not supported."}();var o=e(t),n={getMode:function(){return r},getLength:function(t){return~~(o.length/2)},write:function(t){for(var r=o,e=0;e+1<r.length;){var n=(255&r[e])<<8|255&r[e+1];if(33088<=n&&n<=40956)n-=33088;else{if(!(57408<=n&&n<=60351))throw"illegal char at "+(e+1)+"/"+n;n-=49472}n=192*(n>>>8&255)+(255&n),t.put(n,13),e+=2}if(e<r.length)throw"illegal char at "+(e+1)}};return n},S=function(t){var e=t,n=0,o=0,i=0,r={read:function(){for(;i<8;){if(n>=e.length){if(0==i)return-1;throw"unexpected end of file./"+i}var t=e.charAt(n);if(n+=1,"="==t)return i=0,-1;t.match(/^\s$/)||(o=o<<6|a(t.charCodeAt(0)),i+=6)}var r=o>>>i-8&255;return i-=8,r}},a=function(t){if(65<=t&&t<=90)return t-65;if(97<=t&&t<=122)return t-97+26;if(48<=t&&t<=57)return t-48+52;if(43==t)return 62;if(47==t)return 63;throw"c:"+t};return r},I=function(t,r,e){for(var n=function(t,r){var n=t,o=r,l=new Array(t*r),e={setPixel:function(t,r,e){l[r*n+t]=e},write:function(t){t.writeString("GIF87a"),t.writeShort(n),t.writeShort(o),t.writeByte(128),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(255),t.writeByte(255),t.writeByte(255),t.writeString(","),t.writeShort(0),t.writeShort(0),t.writeShort(n),t.writeShort(o),t.writeByte(0);var r=i(2);t.writeByte(2);for(var e=0;255<r.length-e;)t.writeByte(255),t.writeBytes(r,e,255),e+=255;t.writeByte(r.length-e),t.writeBytes(r,e,r.length-e),t.writeByte(0),t.writeString(";")}},i=function(t){for(var r=1<<t,e=1+(1<<t),n=t+1,o=h(),i=0;i<r;i+=1)o.add(String.fromCharCode(i));o.add(String.fromCharCode(r)),o.add(String.fromCharCode(e));var a=p(),u=function(t){var e=t,n=0,o=0,r={write:function(t,r){if(t>>>r!=0)throw"length over";for(;8<=n+r;)e.writeByte(255&(t<<n|o)),r-=8-n,t>>>=8-n,n=o=0;o|=t<<n,n+=r},flush:function(){0<n&&e.writeByte(o)}};return r}(a);u.write(r,n);var f=0,c=String.fromCharCode(l[f]);for(f+=1;f<l.length;){var g=String.fromCharCode(l[f]);f+=1,o.contains(c+g)?c+=g:(u.write(o.indexOf(c),n),o.size()<4095&&(o.size()==1<<n&&(n+=1),o.add(c+g)),c=g)}return u.write(o.indexOf(c),n),u.write(e,n),u.flush(),a.toByteArray()},h=function(){var r={},e=0,n={add:function(t){if(n.contains(t))throw"dup key:"+t;r[t]=e,e+=1},size:function(){return e},indexOf:function(t){return r[t]},contains:function(t){return void 0!==r[t]}};return n};return e}(t,r),o=0;o<r;o+=1)for(var i=0;i<t;i+=1)n.setPixel(i,o,e(i,o));var a=p();n.write(a);for(var u=function(){function e(t){a+=String.fromCharCode(r(63&t))}var n=0,o=0,i=0,a="",t={},r=function(t){if(t<0);else{if(t<26)return 65+t;if(t<52)return t-26+97;if(t<62)return t-52+48;if(62==t)return 43;if(63==t)return 47}throw"n:"+t};return t.writeByte=function(t){for(n=n<<8|255&t,o+=8,i+=1;6<=o;)e(n>>>o-6),o-=6},t.flush=function(){if(0<o&&(e(n<<6-o),o=n=0),i%3!=0)for(var t=3-i%3,r=0;r<t;r+=1)a+="="},t.toString=function(){return a},t}(),f=a.toByteArray(),c=0;c<f.length;c+=1)u.writeByte(f[c]);return u.flush(),"data:image/gif;base64,"+u};return i}();qrcode.stringToBytesFuncs["UTF-8"]=function(t){return function(t){for(var r=[],e=0;e<t.length;e++){var n=t.charCodeAt(e);n<128?r.push(n):n<2048?r.push(192|n>>6,128|63&n):n<55296||57344<=n?r.push(224|n>>12,128|n>>6&63,128|63&n):(e++,n=65536+((1023&n)<<10|1023&t.charCodeAt(e)),r.push(240|n>>18,128|n>>12&63,128|n>>6&63,128|63&n))}return r}(t)},function(t){"function"==typeof define&&define.amd?define([],t):"object"==typeof exports&&(module.exports=t())}(function(){return qrcode});
+</script>
 <script>
 /* Apply saved / system theme before first paint to avoid a flash */
 (function(){
@@ -32,8 +33,8 @@
     --field:#FAFBFE;
     --check:#E4E7F0;
     --radius:14px;
-    --font-display:"Space Grotesk",system-ui,sans-serif;
-    --font-mono:"Space Mono",ui-monospace,monospace;
+    --font-display:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+    --font-mono:"SFMono-Regular",Consolas,"Liberation Mono",ui-monospace,monospace;
     color-scheme:light;
   }
   html[data-theme="dark"]{
@@ -52,12 +53,12 @@
     color-scheme:dark;
   }
   body,.panel,.tab,.btn,.seg button,.color-input,.logo-drop,
-  input[type=text],input[type=url],input[type=email],input[type=tel],textarea,select{
+  input[type=text],input[type=url],input[type=email],input[type=tel],input[type=password],input[type=number],textarea,select{
     transition:background-color .2s ease,border-color .2s ease,color .2s ease;
   }
   @media (prefers-reduced-motion:reduce){
     body,.panel,.tab,.btn,.seg button,.color-input,.logo-drop,
-    input[type=text],input[type=url],input[type=email],input[type=tel],textarea,select{transition:none}
+    input[type=text],input[type=url],input[type=email],input[type=tel],input[type=password],input[type=number],textarea,select{transition:none}
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
@@ -68,6 +69,7 @@
     font-size:15px;
     line-height:1.5;
     min-height:100vh;
+    overflow-x:hidden;
   }
 
   /* ---------- Header ---------- */
@@ -103,9 +105,25 @@
     display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:24px;
     align-items:start;
   }
+  main>*{min-width:0}
   @media (max-width:900px){
-    main{grid-template-columns:1fr}
-    .preview-col{order:-1;position:static}
+    main{grid-template-columns:minmax(0,1fr);gap:14px}
+    .controls-col{display:contents}
+    .preview-col{order:1;position:static}
+    .controls-col>.panel{order:2;margin-top:0}
+    .controls-col>.panel.content-panel{order:0}
+    .controls-col>.panel,.preview-col{width:100%;min-width:0}
+    .preview-col .tips{margin-top:14px}
+    .viewfinder{padding:18px}
+    .canvas-wrap{max-width:320px;margin-inline:auto}
+    .viewfinder>.actions{display:none}
+  }
+  @media (max-width:520px){
+    header{padding:18px 16px 4px}
+    .header-note{display:none}
+    main{padding:12px 12px 104px}
+    .panel{padding:16px}
+    .canvas-wrap{max-width:230px}
   }
 
   /* ---------- Panels ---------- */
@@ -122,12 +140,24 @@
     display:flex;align-items:center;gap:8px;
   }
   .panel h2::after{content:"";flex:1;height:1px;background:var(--line)}
+  details.panel{padding:0;overflow:hidden}
+  details.panel>summary{
+    list-style:none;cursor:pointer;padding:17px 20px;min-height:58px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    color:var(--ink);font-size:.92rem;font-weight:700;
+  }
+  details.panel>summary::-webkit-details-marker{display:none}
+  details.panel>summary::after{content:"＋";font-size:1.1rem;color:var(--ink-soft)}
+  details.panel[open]>summary::after{content:"−"}
+  details.panel>summary small{display:block;color:var(--ink-soft);font-size:.76rem;font-weight:500;margin-top:2px}
+  details.panel>.panel-body{padding:0 20px 20px;border-top:1px solid var(--line)}
+  details.panel>.panel-body>:first-child{margin-top:18px}
 
   /* ---------- Tabs ---------- */
-  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;min-width:0}
   .tab{
     font:inherit;font-weight:600;font-size:.85rem;
-    padding:7px 14px;border-radius:999px;
+    min-height:44px;padding:9px 14px;border-radius:999px;
     border:1px solid var(--line);background:var(--panel);color:var(--ink-soft);
     cursor:pointer;
   }
@@ -139,7 +169,7 @@
   .field:last-child{margin-bottom:0}
   label{display:block;font-size:.82rem;font-weight:600;margin-bottom:5px}
   label .hint{font-weight:400;color:var(--ink-soft)}
-  input[type=text],input[type=url],input[type=email],input[type=tel],input[type=password],textarea,select{
+  input[type=text],input[type=url],input[type=email],input[type=tel],input[type=password],input[type=number],textarea,select{
     width:100%;
     font:inherit;font-size:.92rem;
     padding:9px 12px;
@@ -152,6 +182,15 @@
   }
   .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media (max-width:480px){.row{grid-template-columns:1fr}}
+  .field-help{font-size:.76rem;color:var(--ink-soft);margin-top:5px}
+  .field-error{display:none;font-size:.78rem;color:var(--warn);margin-top:5px;font-weight:600}
+  .field-error.show{display:block}
+  [aria-invalid="true"]{border-color:var(--warn)!important}
+  .field-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+  .inline-action{font:inherit;border:0;background:none;color:var(--accent-ink);font-size:.8rem;font-weight:700;cursor:pointer;padding:6px 2px}
+  .inline-action:hover{text-decoration:underline}
+  .password-wrap{display:grid;grid-template-columns:1fr auto;gap:8px}
+  .password-wrap .btn{padding-inline:12px}
 
   /* ---------- Sliders ---------- */
   .slider-field{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
@@ -178,10 +217,11 @@
   .color-input input[type=color]::-webkit-color-swatch-wrapper{padding:0}
   .color-input input[type=color]::-webkit-color-swatch{border:1px solid var(--line);border-radius:7px}
   .color-input .hexval{font-family:var(--font-mono);font-size:.78rem;color:var(--ink-soft)}
+  .color-input .hex-edit{width:100px;padding:3px 5px;font-family:var(--font-mono);font-size:.78rem;text-transform:uppercase}
   .color-input .role{font-size:.8rem;font-weight:600}
   .swatches{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
   .swatch{
-    width:26px;height:26px;border-radius:8px;cursor:pointer;
+    width:36px;height:36px;border-radius:8px;cursor:pointer;
     border:1px solid rgba(16,20,42,.15);padding:0;
   }
   .swatch:hover{transform:scale(1.12)}
@@ -197,18 +237,19 @@
   @media (max-width:900px){
     main{padding-bottom:110px}
     .mobile-bar{
-      display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:8px;
+      display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr;gap:8px;
       position:fixed;bottom:0;left:0;right:0;z-index:50;
       padding:10px 14px calc(10px + env(safe-area-inset-bottom));
       background:var(--panel);border-top:1px solid var(--line);
     }
     .mobile-bar .btn{font-size:.84rem;padding:10px 6px}
+    .mobile-bar.no-share{grid-template-columns:1.25fr 1fr 1fr}
   }
 
   .seg{display:flex;gap:0;border:1px solid var(--line);border-radius:9px;overflow:hidden;width:100%}
   .seg button{
     flex:1;font:inherit;font-size:.82rem;font-weight:600;
-    padding:8px 4px;border:none;background:var(--panel);color:var(--ink-soft);cursor:pointer;
+    min-height:44px;padding:8px 4px;border:none;background:var(--panel);color:var(--ink-soft);cursor:pointer;
     border-left:1px solid var(--line);
   }
   .seg button:first-child{border-left:none}
@@ -216,7 +257,8 @@
   .seg button:hover{color:var(--ink)}
 
   .checkline{display:flex;align-items:center;gap:9px;font-size:.86rem;font-weight:500;cursor:pointer;margin-bottom:0}
-  .checkline input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+  .checkline{min-height:36px}
+  .checkline input{width:20px;height:20px;accent-color:var(--accent);cursor:pointer;flex:none}
 
   /* ---------- Logo ---------- */
   .logo-drop{
@@ -275,6 +317,24 @@
     margin-top:14px;font-family:var(--font-mono);font-size:.72rem;color:var(--ink-soft);
     flex-wrap:wrap;
   }
+  .technical{margin-top:10px}
+  .technical summary{cursor:pointer;color:var(--ink-soft);font-size:.78rem;font-weight:600}
+  .technical[open] summary{margin-bottom:8px}
+  .reliability{
+    margin-top:14px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--field)
+  }
+  .reliability-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .reliability-label{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.85rem}
+  .reliability-dot{width:10px;height:10px;border-radius:50%;background:var(--ink-soft);flex:none}
+  .reliability.good .reliability-dot{background:#16834A}
+  .reliability.caution .reliability-dot{background:#D08A00}
+  .reliability.risky .reliability-dot{background:#C53A3A}
+  .reliability-state{font-size:.78rem;font-weight:700;color:var(--ink-soft);text-align:right;overflow-wrap:anywhere}
+  .reliability ul{margin:8px 0 0 18px;color:var(--ink-soft);font-size:.78rem}
+  .reliability li+li{margin-top:4px}
+  .empty-preview{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:24px;color:var(--ink-soft);font-weight:700;line-height:1.4;background:var(--field)}
+  .empty-preview small{display:block;font-weight:500;font-size:.76rem;margin-top:4px}
+  .canvas-wrap:not(.empty) .empty-preview{display:none}
   .notice{
     display:none;margin-top:12px;padding:9px 12px;border-radius:9px;
     font-size:.82rem;font-weight:500;
@@ -287,7 +347,7 @@
   .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
   .btn{
     font:inherit;font-weight:600;font-size:.9rem;
-    padding:11px 14px;border-radius:10px;cursor:pointer;
+    min-height:44px;padding:11px 14px;border-radius:10px;cursor:pointer;
     border:1px solid var(--line);background:var(--panel);color:var(--ink);
   }
   .btn:hover{border-color:var(--ink)}
@@ -295,7 +355,26 @@
   .btn.primary:hover{background:var(--accent-ink);border-color:var(--accent-ink)}
   .btn.small{font-size:.8rem;padding:7px 10px}
   .btn.full{grid-column:1/-1}
+  .btn[hidden]{display:none}
   .btn:disabled{opacity:.45;cursor:not-allowed}
+  .size-presets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+  .size-presets .btn[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink)}
+  .size-custom{display:grid;grid-template-columns:1fr 112px;gap:10px;align-items:center}
+  .helper-note{font-size:.76rem;color:var(--ink-soft);margin-top:8px}
+  .toast{
+    position:fixed;z-index:80;left:50%;bottom:24px;transform:translate(-50%,16px);
+    max-width:min(92vw,520px);padding:11px 16px;border-radius:10px;background:var(--ink);color:var(--paper);
+    font-size:.85rem;font-weight:700;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  @media (max-width:900px){.toast{bottom:84px}}
+  @media (max-width:520px){
+    .swatch{width:44px;height:44px}
+    .size-custom{grid-template-columns:1fr 100px}
+    .mobile-bar .btn{font-size:.76rem}
+    .reliability-head{align-items:flex-start;flex-wrap:wrap}
+    .reliability-state{margin-left:auto}
+  }
 
   footer{
     max-width:1160px;margin:0 auto;padding:0 24px 40px;
@@ -317,7 +396,7 @@
     <h1>Quiet Response<small>QR code generator — free, private, in-browser</small></h1>
   </div>
   <div class="header-right">
-    <span class="header-note">no server · no tracking · nothing leaves this page</span>
+    <span class="header-note">fully offline · no tracking · nothing leaves this page</span>
     <button class="theme-toggle" id="themeToggle" aria-pressed="false" aria-label="Switch to dark theme">☾ Dark</button>
   </div>
 </header>
@@ -326,32 +405,45 @@
   <!-- ============ LEFT: CONTROLS ============ -->
   <div class="controls-col">
 
-    <section class="panel">
-      <h2>Content</h2>
+    <section class="panel content-panel" aria-labelledby="contentHeading">
+      <h2 id="contentHeading">Content</h2>
       <div class="tabs" role="tablist" aria-label="Content type">
-        <button class="tab" role="tab" aria-selected="true" data-tab="link">Link / Text</button>
-        <button class="tab" role="tab" aria-selected="false" data-tab="wifi">Wi-Fi</button>
-        <button class="tab" role="tab" aria-selected="false" data-tab="email">Email</button>
-        <button class="tab" role="tab" aria-selected="false" data-tab="sms">SMS</button>
-        <button class="tab" role="tab" aria-selected="false" data-tab="vcard">Contact</button>
+        <button class="tab" id="tab-link" role="tab" aria-selected="true" aria-controls="pane-link" tabindex="0" data-tab="link">Link / Text</button>
+        <button class="tab" id="tab-wifi" role="tab" aria-selected="false" aria-controls="pane-wifi" tabindex="-1" data-tab="wifi">Wi-Fi</button>
+        <button class="tab" id="tab-email" role="tab" aria-selected="false" aria-controls="pane-email" tabindex="-1" data-tab="email">Email</button>
+        <button class="tab" id="tab-sms" role="tab" aria-selected="false" aria-controls="pane-sms" tabindex="-1" data-tab="sms">SMS</button>
+        <button class="tab" id="tab-vcard" role="tab" aria-selected="false" aria-controls="pane-vcard" tabindex="-1" data-tab="vcard">Contact</button>
       </div>
 
-      <div class="tab-pane" data-pane="link">
+      <div class="tab-pane" id="pane-link" role="tabpanel" aria-labelledby="tab-link" data-pane="link">
         <div class="field">
           <label for="inpText">Link or text</label>
-          <textarea id="inpText" placeholder="https://example.com">https://github.com</textarea>
+          <textarea id="inpText" placeholder="Paste a link or enter text" spellcheck="false" autocapitalize="none" aria-describedby="linkHelp linkError"></textarea>
+          <div class="field-help" id="linkHelp">Web addresses should include https:// so phones open them as links.</div>
+          <div class="field-error" id="linkError"></div>
+          <button class="inline-action" id="urlFix" type="button" hidden></button>
+          <div class="field-actions">
+            <button class="btn small" id="btnPaste" type="button">Paste</button>
+            <button class="btn small" id="btnExample" type="button">Try an example</button>
+            <button class="btn small" id="btnClearContent" type="button">Clear content</button>
+          </div>
         </div>
       </div>
 
-      <div class="tab-pane" data-pane="wifi" hidden>
+      <div class="tab-pane" id="pane-wifi" role="tabpanel" aria-labelledby="tab-wifi" data-pane="wifi" hidden>
         <div class="row">
           <div class="field">
             <label for="wifiSsid">Network name (SSID)</label>
-            <input type="text" id="wifiSsid" placeholder="MyNetwork">
+            <input type="text" id="wifiSsid" placeholder="MyNetwork" autocomplete="off" aria-describedby="wifiSsidError">
+            <div class="field-error" id="wifiSsidError"></div>
           </div>
-          <div class="field">
+          <div class="field" id="wifiPassField">
             <label for="wifiPass">Password</label>
-            <input type="text" id="wifiPass" placeholder="••••••••">
+            <div class="password-wrap">
+              <input type="password" id="wifiPass" placeholder="••••••••" autocomplete="new-password" aria-describedby="wifiPassError">
+              <button class="btn small" id="wifiPassToggle" type="button" aria-pressed="false">Show</button>
+            </div>
+            <div class="field-error" id="wifiPassError"></div>
           </div>
         </div>
         <div class="row">
@@ -369,10 +461,11 @@
         </div>
       </div>
 
-      <div class="tab-pane" data-pane="email" hidden>
+      <div class="tab-pane" id="pane-email" role="tabpanel" aria-labelledby="tab-email" data-pane="email" hidden>
         <div class="field">
           <label for="emailTo">To</label>
-          <input type="email" id="emailTo" placeholder="hello@example.com">
+          <input type="email" id="emailTo" placeholder="hello@example.com" autocomplete="email" aria-describedby="emailToError">
+          <div class="field-error" id="emailToError"></div>
         </div>
         <div class="row">
           <div class="field">
@@ -386,11 +479,12 @@
         </div>
       </div>
 
-      <div class="tab-pane" data-pane="sms" hidden>
+      <div class="tab-pane" id="pane-sms" role="tabpanel" aria-labelledby="tab-sms" data-pane="sms" hidden>
         <div class="row">
           <div class="field">
             <label for="smsNumber">Phone number</label>
-            <input type="tel" id="smsNumber" placeholder="+61 400 000 000">
+            <input type="tel" id="smsNumber" placeholder="+61 400 000 000" inputmode="tel" autocomplete="tel" aria-describedby="smsNumberError">
+            <div class="field-error" id="smsNumberError"></div>
           </div>
           <div class="field">
             <label for="smsBody">Message <span class="hint">(optional)</span></label>
@@ -399,11 +493,12 @@
         </div>
       </div>
 
-      <div class="tab-pane" data-pane="vcard" hidden>
+      <div class="tab-pane" id="pane-vcard" role="tabpanel" aria-labelledby="tab-vcard" data-pane="vcard" hidden>
         <div class="row">
           <div class="field">
             <label for="vcName">Full name</label>
-            <input type="text" id="vcName" placeholder="Jane Citizen">
+            <input type="text" id="vcName" placeholder="Jane Citizen" autocomplete="name" aria-describedby="vcNameError">
+            <div class="field-error" id="vcNameError"></div>
           </div>
           <div class="field">
             <label for="vcOrg">Organisation <span class="hint">(optional)</span></label>
@@ -413,33 +508,36 @@
         <div class="row">
           <div class="field">
             <label for="vcPhone">Phone <span class="hint">(optional)</span></label>
-            <input type="tel" id="vcPhone">
+            <input type="tel" id="vcPhone" autocomplete="tel">
           </div>
           <div class="field">
             <label for="vcEmail">Email <span class="hint">(optional)</span></label>
-            <input type="email" id="vcEmail">
+            <input type="email" id="vcEmail" autocomplete="email" aria-describedby="vcEmailError">
+            <div class="field-error" id="vcEmailError"></div>
           </div>
         </div>
         <div class="field">
           <label for="vcUrl">Website <span class="hint">(optional)</span></label>
-          <input type="url" id="vcUrl">
+          <input type="url" id="vcUrl" autocomplete="url" aria-describedby="vcUrlError">
+          <div class="field-error" id="vcUrlError"></div>
         </div>
       </div>
     </section>
 
-    <section class="panel">
-      <h2>Appearance</h2>
+    <details class="panel" id="appearancePanel">
+      <summary><span>Customize appearance<small>Colors, gradients and module shapes</small></span></summary>
+      <div class="panel-body">
       <div class="color-grid">
         <div>
           <div class="color-input">
             <input type="color" id="fgColor" value="#10142A" aria-label="Foreground color">
-            <div><div class="role">Foreground</div><div class="hexval" id="fgHex">#10142A</div></div>
+            <div><label class="role" for="fgHex">Foreground</label><input class="hex-edit" type="text" id="fgHex" value="#10142A" maxlength="7" spellcheck="false"></div>
           </div>
         </div>
         <div>
           <div class="color-input">
             <input type="color" id="bgColor" value="#FFFFFF" aria-label="Background color">
-            <div><div class="role">Background</div><div class="hexval" id="bgHex">#FFFFFF</div></div>
+            <div><label class="role" for="bgHex">Background</label><input class="hex-edit" type="text" id="bgHex" value="#FFFFFF" maxlength="7" spellcheck="false"></div>
           </div>
         </div>
       </div>
@@ -453,7 +551,7 @@
       <div class="field" id="gradientField" hidden style="margin-top:12px">
         <div class="color-input" style="max-width:280px">
           <input type="color" id="fgColor2" value="#2B4BF2" aria-label="Gradient end color">
-          <div><div class="role">Gradient end</div><div class="hexval" id="fg2Hex">#2B4BF2</div></div>
+          <div><label class="role" for="fg2Hex">Gradient end</label><input class="hex-edit" type="text" id="fg2Hex" value="#2B4BF2" maxlength="7" spellcheck="false"></div>
         </div>
       </div>
 
@@ -473,27 +571,34 @@
           <button aria-pressed="false" data-val="circle">Circle</button>
         </div>
       </div>
-    </section>
+      </div>
+    </details>
 
-    <section class="panel">
-      <h2>Logo</h2>
+    <details class="panel" id="logoPanel">
+      <summary><span>Add a logo<small>Place a local image in the centre</small></span></summary>
+      <div class="panel-body">
       <div class="logo-drop" id="logoDrop" tabindex="0" role="button" aria-label="Upload a center logo">
         <span id="logoDropText">Click or drop an image here (PNG, JPG, SVG)</span>
       </div>
-      <input type="file" id="logoFile" accept="image/*" hidden>
-      <div class="logo-actions" id="logoActions" hidden>
-        <button class="btn small" id="logoRemove">Remove logo</button>
+      <input type="file" id="logoFile" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden>
+      <div id="logoOptions" hidden>
+        <div class="logo-actions" id="logoActions">
+          <button class="btn small" id="logoRemove" type="button">Remove logo</button>
+        </div>
+        <div class="slider-field" style="margin-top:14px">
+          <label for="logoSize">Logo size</label>
+          <input type="range" id="logoSize" min="12" max="30" value="20" step="1">
+          <output class="value" id="logoSizeVal" for="logoSize">20%</output>
+        </div>
+        <label class="checkline" style="margin-top:8px"><input type="checkbox" id="logoPad" checked> Clear space behind logo</label>
       </div>
-      <div class="slider-field" style="margin-top:14px">
-        <label for="logoSize">Logo size</label>
-        <input type="range" id="logoSize" min="12" max="30" value="20" step="1">
-        <span class="value" id="logoSizeVal">20 %</span>
+      <p class="helper-note">Images stay on this device. Maximum file size: 5 MB.</p>
       </div>
-      <label class="checkline" style="margin-top:8px"><input type="checkbox" id="logoPad" checked> Clear space behind logo</label>
-    </section>
+    </details>
 
-    <section class="panel">
-      <h2>Frame</h2>
+    <details class="panel" id="framePanel">
+      <summary><span>Add a frame<small>Optional color and call-to-action label</small></span></summary>
+      <div class="panel-body">
       <label class="checkline"><input type="checkbox" id="frameOn"> Add a colored frame with a label</label>
       <div id="frameFields" hidden>
         <div class="row" style="margin-top:12px">
@@ -501,7 +606,7 @@
             <label for="frameColor">Frame color</label>
             <div class="color-input">
               <input type="color" id="frameColor" value="#2B4BF2" aria-label="Frame color">
-              <div><div class="role">Frame</div><div class="hexval" id="frameHex">#2B4BF2</div></div>
+              <div><label class="role" for="frameHex">Frame</label><input class="hex-edit" type="text" id="frameHex" value="#2B4BF2" maxlength="7" spellcheck="false"></div>
             </div>
             <div class="swatches" id="frameSwatches" aria-label="Preset frame colors"></div>
           </div>
@@ -511,19 +616,35 @@
           </div>
         </div>
       </div>
-    </section>
-
-    <section class="panel">
-      <h2>Output</h2>
-      <div class="slider-field">
-        <label for="qrSize">Image size</label>
-        <input type="range" id="qrSize" min="256" max="2048" step="64" value="1024">
-        <span class="value" id="qrSizeVal">1024 px</span>
       </div>
-      <div class="slider-field" style="margin-top:10px">
+    </details>
+
+    <details class="panel" id="outputPanel">
+      <summary><span>Advanced export<small>Dimensions, quiet zone and recovery level</small></span></summary>
+      <div class="panel-body">
+      <div class="field">
+        <label>Image width</label>
+        <div class="size-presets" id="sizePresets" role="group" aria-label="Image width presets">
+          <button class="btn small" type="button" data-size="512" aria-pressed="false">512 px</button>
+          <button class="btn small" type="button" data-size="1024" aria-pressed="true">1024 px</button>
+          <button class="btn small" type="button" data-size="2048" aria-pressed="false">2048 px</button>
+        </div>
+        <div class="size-custom">
+          <label for="qrSize">Custom width</label>
+          <input type="number" id="qrSize" min="256" max="2048" step="64" value="1024" inputmode="numeric">
+        </div>
+        <p class="helper-note">256–2048 px. Framed exports may be taller than this width.</p>
+      </div>
+      <div class="field" style="margin-top:12px">
         <label for="quietZone">Quiet zone <span class="hint">(blank border, in modules)</span></label>
-        <input type="range" id="quietZone" min="0" max="8" step="1" value="4">
-        <span class="value" id="quietZoneVal">4</span>
+        <select id="quietZone">
+          <option value="4" selected>4 — Recommended</option>
+          <option value="8">8 — Extra spacing</option>
+          <option value="3">3 — Reduced</option>
+          <option value="2">2 — Risky</option>
+          <option value="1">1 — Risky</option>
+          <option value="0">0 — No quiet zone</option>
+        </select>
       </div>
       <div class="field" style="margin-top:12px">
         <label for="ecLevel">Error correction <span class="hint">(higher survives more damage — and logos)</span></label>
@@ -535,36 +656,51 @@
         </select>
       </div>
       <div class="field" style="margin-top:14px">
-        <button class="btn small" id="btnReset">Reset all settings</button>
+        <button class="btn small" id="btnReset" type="button">Reset design</button>
       </div>
-    </section>
+      </div>
+    </details>
   </div>
 
   <!-- ============ RIGHT: PREVIEW ============ -->
   <div class="preview-col">
     <div class="viewfinder">
       <div class="vf-corner" aria-hidden="true"></div>
-      <div class="canvas-wrap" id="canvasWrap">
-        <canvas id="qrCanvas" width="1024" height="1024" role="img" aria-label="Generated QR code preview"></canvas>
+      <div class="canvas-wrap empty" id="canvasWrap">
+        <canvas id="qrCanvas" width="1024" height="1024" role="img" aria-label="No QR code generated yet"></canvas>
+        <div class="empty-preview" id="emptyPreview"><div>Start with your content<small>Your QR code will appear here instantly.</small></div></div>
         <div class="scanline" aria-hidden="true"></div>
       </div>
-      <div class="preview-meta">
-        <span id="metaModules">— × — modules</span>
-        <span id="metaVersion">version —</span>
-        <span id="metaDims">— × — px</span>
-        <span id="metaChars">0 chars</span>
+      <div class="reliability" id="reliability" aria-live="polite">
+        <div class="reliability-head">
+          <span class="reliability-label"><span class="reliability-dot" aria-hidden="true"></span> Scan reliability</span>
+          <span class="reliability-state" id="reliabilityState">Waiting for content</span>
+        </div>
+        <ul id="reliabilityList"><li>Add content to run the local checks.</li></ul>
       </div>
+      <details class="technical" id="technicalDetails">
+        <summary>Technical details</summary>
+        <div class="preview-meta">
+          <span id="metaModules">— × — modules</span>
+          <span id="metaVersion">version —</span>
+          <span id="metaDims">— × — px</span>
+          <span id="metaChars">0 chars</span>
+        </div>
+      </details>
       <div class="notice warn" id="noticeError" role="alert"></div>
       <div class="notice info" id="noticeInfo" role="status"></div>
       <div class="actions">
         <button class="btn primary" id="btnPng">Download PNG</button>
         <button class="btn" id="btnSvg">Download SVG</button>
-        <button class="btn full" id="btnCopy">Copy image to clipboard</button>
+        <button class="btn" id="btnCopy">Copy image</button>
+        <button class="btn" id="btnShare" hidden>Share QR</button>
       </div>
+      <p class="helper-note" id="copyHelp" hidden>Image copying requires a secure HTTPS page in this browser. PNG download still works.</p>
     </div>
 
-    <div class="panel tips">
-      <h2>Before you print</h2>
+    <details class="panel tips">
+      <summary><span>Before you print<small>Five quick checks for reliable results</small></span></summary>
+      <div class="panel-body">
       <ul>
         <li><strong>Test with a real phone camera</strong> — especially before a big print run.</li>
         <li>Keep the <strong>quiet zone at 4 or more</strong> for stickers and posters.</li>
@@ -572,18 +708,22 @@
         <li>Matte finishes scan better than glossy — glare is the enemy of little squares.</li>
         <li>Printing small? Shorter links make coarser, easier-to-scan codes.</li>
       </ul>
-    </div>
+      </div>
+    </details>
   </div>
 </main>
 
-<div class="mobile-bar">
+<div class="mobile-bar no-share" id="mobileBar">
   <button class="btn primary" id="mBtnPng">Download PNG</button>
   <button class="btn" id="mBtnSvg">SVG</button>
   <button class="btn" id="mBtnCopy">Copy</button>
+  <button class="btn" id="mBtnShare" hidden>Share</button>
 </div>
 
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <footer>
-  Built as a single HTML file — open the source, fork it, host it anywhere.
+  Fully offline in a single HTML file — open the source, fork it, host it anywhere.
   Always test a printed code with a real phone camera before mass-producing it.
 </footer>
 
@@ -592,7 +732,7 @@
   "use strict";
 
   /* ---------------- State ---------------- */
-  const state = {
+  const defaults = Object.freeze({
     tab: "link",
     fg: "#10142A",
     fg2: "#2B4BF2",
@@ -610,11 +750,48 @@
     frameOn: false,
     frameColor: "#2B4BF2",
     frameLabel: "SCAN ME"
-  };
+  });
+  const persistedKeys = ["tab","fg","fg2","bg","transparent","gradient","moduleShape","eyeShape","size","quiet","ec","logoSize","logoPad","frameOn","frameColor","frameLabel"];
+  function loadSettings(){
+    try{
+      const saved = JSON.parse(localStorage.getItem("qr-settings") || "null");
+      if(!saved || typeof saved !== "object") return {};
+      return persistedKeys.reduce((out, key) => {
+        if(Object.prototype.hasOwnProperty.call(saved, key)) out[key] = saved[key];
+        return out;
+      }, {});
+    }catch(e){ return {}; }
+  }
+  const state = Object.assign({}, defaults, loadSettings(), {logoImg:null});
+  if(!["link","wifi","email","sms","vcard"].includes(state.tab)) state.tab = "link";
+  if(!["L","M","Q","H"].includes(state.ec)) state.ec = "M";
+  ["fg","fg2","bg","frameColor"].forEach(key => { if(!/^#[0-9A-F]{6}$/i.test(state[key])) state[key] = defaults[key]; else state[key] = state[key].toUpperCase(); });
+  if(!["square","rounded","dots"].includes(state.moduleShape)) state.moduleShape = "square";
+  if(!["square","rounded","circle"].includes(state.eyeShape)) state.eyeShape = "square";
+  state.size = Math.min(2048, Math.max(256, Number(state.size) || 1024));
+  state.quiet = [0,1,2,3,4,8].includes(Number(state.quiet)) ? Number(state.quiet) : 4;
+  state.logoSize = Math.min(30, Math.max(12, Number(state.logoSize) || 20));
+  state.frameLabel = typeof state.frameLabel === "string" ? state.frameLabel.slice(0,40) : defaults.frameLabel;
+  ["transparent","gradient","logoPad","frameOn"].forEach(key => { state[key] = !!state[key]; });
 
   const $ = id => document.getElementById(id);
   const canvas = $("qrCanvas");
   const ctx = canvas.getContext("2d");
+  let toastTimer = null;
+  function showToast(message){
+    const toast = $("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+  }
+  function persistSettings(){
+    try{
+      const saved = {};
+      persistedKeys.forEach(key => { saved[key] = state[key]; });
+      localStorage.setItem("qr-settings", JSON.stringify(saved));
+    }catch(e){}
+  }
 
   /* ---------------- Theme toggle ---------------- */
   const themeBtn = $("themeToggle");
@@ -636,44 +813,84 @@
 
   /* ---------------- Payload builders ---------------- */
   const wifiEscape = s => s.replace(/([\\;,:"'])/g, "\\$1");
-
+  const vcardEscape = s => s.replace(/\\/g,"\\\\").replace(/\n/g,"\\n").replace(/([,;])/g,"\\$1");
+  const errorIds = ["linkError","wifiSsidError","wifiPassError","emailToError","smsNumberError","vcNameError","vcEmailError","vcUrlError"];
+  function clearFieldErrors(){
+    errorIds.forEach(id => { const el = $(id); el.textContent = ""; el.classList.remove("show"); });
+    document.querySelectorAll("[aria-invalid=true]").forEach(el => el.removeAttribute("aria-invalid"));
+    $("urlFix").hidden = true;
+  }
+  function invalid(fieldId, errorId, message){
+    const field = $(fieldId), error = $(errorId);
+    field.setAttribute("aria-invalid", "true");
+    error.textContent = message;
+    error.classList.add("show");
+    return {payload:"", error:message, empty:false};
+  }
+  function looksLikeBareDomain(value){
+    return /^(?:www\.)?[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z]{2,})(?:[\/:?#].*)?$/i.test(value);
+  }
   function buildPayload(){
+    clearFieldErrors();
     switch(state.tab){
       case "wifi": {
         const ssid = $("wifiSsid").value.trim();
-        if(!ssid) return "";
+        if(!ssid && !$("wifiPass").value && !$("wifiHidden").checked) return {payload:"", error:null, empty:true};
+        if(!ssid) return invalid("wifiSsid", "wifiSsidError", "Enter the network name (SSID).");
         const enc = $("wifiEnc").value;
+        if(enc !== "nopass" && !$("wifiPass").value) return invalid("wifiPass", "wifiPassError", "Enter the Wi-Fi password, or choose Open network.");
         let s = "WIFI:T:" + enc + ";S:" + wifiEscape(ssid) + ";";
         if(enc !== "nopass") s += "P:" + wifiEscape($("wifiPass").value) + ";";
         if($("wifiHidden").checked) s += "H:true;";
-        return s + ";";
+        return {payload:s + ";", error:null, empty:false};
       }
       case "email": {
         const to = $("emailTo").value.trim();
-        if(!to) return "";
+        if(!to && !$("emailSubject").value && !$("emailBody").value) return {payload:"", error:null, empty:true};
+        if(!to) return invalid("emailTo", "emailToError", "Enter the recipient's email address.");
+        if(!$("emailTo").checkValidity()) return invalid("emailTo", "emailToError", "Enter a valid email address.");
         const params = [];
         if($("emailSubject").value) params.push("subject=" + encodeURIComponent($("emailSubject").value));
         if($("emailBody").value)    params.push("body=" + encodeURIComponent($("emailBody").value));
-        return "mailto:" + to + (params.length ? "?" + params.join("&") : "");
+        return {payload:"mailto:" + to + (params.length ? "?" + params.join("&") : ""), error:null, empty:false};
       }
       case "sms": {
         const num = $("smsNumber").value.trim();
-        if(!num) return "";
-        return "SMSTO:" + num + ":" + $("smsBody").value;
+        if(!num && !$("smsBody").value) return {payload:"", error:null, empty:true};
+        if(!num) return invalid("smsNumber", "smsNumberError", "Enter the phone number.");
+        if(num.replace(/\D/g, "").length < 6) return invalid("smsNumber", "smsNumberError", "Enter a complete phone number.");
+        return {payload:"SMSTO:" + num + ":" + $("smsBody").value, error:null, empty:false};
       }
       case "vcard": {
         const name = $("vcName").value.trim();
-        if(!name) return "";
-        const lines = ["BEGIN:VCARD","VERSION:3.0","FN:" + name];
-        if($("vcOrg").value)   lines.push("ORG:" + $("vcOrg").value);
-        if($("vcPhone").value) lines.push("TEL:" + $("vcPhone").value);
-        if($("vcEmail").value) lines.push("EMAIL:" + $("vcEmail").value);
-        if($("vcUrl").value)   lines.push("URL:" + $("vcUrl").value);
+        if(!name && !$("vcOrg").value && !$("vcPhone").value && !$("vcEmail").value && !$("vcUrl").value) return {payload:"", error:null, empty:true};
+        if(!name) return invalid("vcName", "vcNameError", "Enter the contact's full name.");
+        if($("vcEmail").value && !$("vcEmail").checkValidity()) return invalid("vcEmail", "vcEmailError", "Enter a valid email address.");
+        if($("vcUrl").value && !$("vcUrl").checkValidity()) return invalid("vcUrl", "vcUrlError", "Enter a complete website address, including https://.");
+        const lines = ["BEGIN:VCARD","VERSION:3.0","FN:" + vcardEscape(name)];
+        if($("vcOrg").value)   lines.push("ORG:" + vcardEscape($("vcOrg").value));
+        if($("vcPhone").value) lines.push("TEL:" + vcardEscape($("vcPhone").value));
+        if($("vcEmail").value) lines.push("EMAIL:" + vcardEscape($("vcEmail").value));
+        if($("vcUrl").value)   lines.push("URL:" + vcardEscape($("vcUrl").value));
         lines.push("END:VCARD");
-        return lines.join("\n");
+        return {payload:lines.join("\n"), error:null, empty:false};
       }
-      default:
-        return $("inpText").value.trim();
+      default: {
+        const value = $("inpText").value.trim();
+        if(!value) return {payload:"", error:null, empty:true};
+        if(looksLikeBareDomain(value)){
+          const fixed = "https://" + value;
+          const result = invalid("inpText", "linkError", "This looks like a website. Add https:// so phones open it as a link.");
+          $("urlFix").textContent = "Use " + fixed;
+          $("urlFix").dataset.value = fixed;
+          $("urlFix").hidden = false;
+          return result;
+        }
+        if(/^https?:/i.test(value)){
+          try{ new URL(value); }catch(e){ return invalid("inpText", "linkError", "Check this web address—it does not look complete."); }
+        }
+        return {payload:value, error:null, empty:false};
+      }
     }
   }
 
@@ -682,7 +899,7 @@
 
   function buildQr(payload){
     qr = null;
-    if(!payload) return "Enter some content to generate a code.";
+    if(!payload) return null;
     try{
       const q = qrcode(0, state.ec);
       q.addData(payload);
@@ -731,27 +948,51 @@
 
   /* ---------------- Canvas rendering ---------------- */
   const qrLayer = document.createElement("canvas"); // QR drawn here first so transparency punch-outs work
+  let currentPayload = "";
+  let renderVersion = 0;
 
   function render(){
-    const payload = buildPayload();
-    const err = buildQr(payload);
+    const result = buildPayload();
+    const payload = result.payload;
+    const qrError = result.error ? null : buildQr(payload);
+    const err = result.error || qrError;
     const errBox = $("noticeError");
     const L = getLayout();
+    const version = ++renderVersion;
+    currentPayload = payload;
 
     canvas.width = L.W;
     canvas.height = L.H;
     ctx.clearRect(0, 0, L.W, L.H);
 
+    if(result.empty){
+      $("canvasWrap").classList.add("empty");
+      $("emptyPreview").innerHTML = "<div>Start with your content<small>Your QR code will appear here instantly.</small></div>";
+      errBox.classList.remove("show");
+      $("metaModules").textContent = "— × — modules";
+      $("metaVersion").textContent = "version —";
+      $("metaDims").textContent = "— × — px";
+      $("metaChars").textContent = "0 chars";
+      canvas.setAttribute("aria-label", "No QR code generated yet");
+      setButtons(false);
+      setReliability("waiting", "Waiting for content", ["Add content to run the local checks."]);
+      return;
+    }
     if(err){
-      errBox.textContent = err;
-      errBox.classList.add("show");
+      $("canvasWrap").classList.add("empty");
+      $("emptyPreview").innerHTML = "<div>Check your content<small>Fix the highlighted field to continue.</small></div>";
+      if(qrError){ errBox.textContent = err; errBox.classList.add("show"); }
+      else errBox.classList.remove("show");
       $("metaModules").textContent = "— × — modules";
       $("metaVersion").textContent = "version —";
       $("metaDims").textContent = "— × — px";
       $("metaChars").textContent = payload.length + " chars";
+      canvas.setAttribute("aria-label", "QR code unavailable: " + err);
       setButtons(false);
+      setReliability("risky", "Needs attention", [err]);
       return;
     }
+    $("canvasWrap").classList.remove("empty");
     errBox.classList.remove("show");
     setButtons(true);
 
@@ -771,7 +1012,7 @@
     // Label text under the code
     if(state.frameOn && L.label){
       const fontPx = Math.round(L.labelH * 0.42);
-      ctx.font = "700 " + fontPx + "px 'Space Grotesk', system-ui, sans-serif";
+      ctx.font = "700 " + fontPx + "px system-ui, sans-serif";
       ctx.fillStyle = frameTextColor();
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -784,7 +1025,9 @@
     $("metaVersion").textContent = "version " + ((n - 17) / 4) + " · EC " + state.ec;
     $("metaDims").textContent = L.W + " × " + L.H + " px";
     $("metaChars").textContent = payload.length + " chars";
-    updateHints();
+    canvas.setAttribute("aria-label", "Generated " + state.tab + " QR code, " + n + " by " + n + " modules");
+    updateReliability(payload);
+    verifyLocalDecode(version);
   }
 
   function drawQrLayer(g, S){
@@ -884,8 +1127,15 @@
     }
   }
 
+  const canCopyImage = !!(window.isSecureContext && navigator.clipboard && navigator.clipboard.write && window.ClipboardItem);
+  let canShareFiles = false;
+  try{
+    canShareFiles = !!(navigator.share && navigator.canShare && window.File && navigator.canShare({files:[new File([""], "qr.png", {type:"image/png"})]}));
+  }catch(e){}
   function setButtons(on){
-    ["btnPng","btnSvg","btnCopy","mBtnPng","mBtnSvg","mBtnCopy"].forEach(id => { $(id).disabled = !on; });
+    ["btnPng","btnSvg","mBtnPng","mBtnSvg"].forEach(id => { $(id).disabled = !on; });
+    ["btnCopy","mBtnCopy"].forEach(id => { $(id).disabled = !on || !canCopyImage; });
+    ["btnShare","mBtnShare"].forEach(id => { $(id).disabled = !on || !canShareFiles; });
   }
 
   /* ---------------- Scannability hints ---------------- */
@@ -898,21 +1148,69 @@
     const l1 = luminance(a), l2 = luminance(b);
     return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
   }
-  function updateHints(){
-    const info = $("noticeInfo");
-    const msgs = [];
-    if(!state.transparent && contrast(state.fg, state.bg) < 3)
-      msgs.push("Low contrast between foreground and background — some scanners may struggle.");
-    if(state.logoImg && (state.ec === "L" || state.ec === "M"))
-      msgs.push("A logo covers data. Error correction H is recommended when using a logo.");
-    if(state.quiet === 0)
-      msgs.push("A quiet zone of at least 4 modules is recommended for reliable scanning.");
-    if(msgs.length){
-      info.textContent = msgs.join(" ");
-      info.classList.add("show");
+  function setReliability(level, label, messages){
+    const box = $("reliability");
+    box.classList.remove("good", "caution", "risky");
+    if(level !== "waiting") box.classList.add(level);
+    $("reliabilityState").textContent = label;
+    $("reliabilityList").innerHTML = messages.map(message => "<li>" + escapeXml(message) + "</li>").join("");
+  }
+  function updateReliability(){
+    const messages = [];
+    let severity = 0; // 0 good, 1 caution, 2 risky
+    const add = (level, message) => { severity = Math.max(severity, level); messages.push(message); };
+    if(state.transparent){
+      add(1, "Transparent backgrounds depend on whatever is placed behind the code.");
     }else{
-      info.classList.remove("show");
+      const ratios = [contrast(state.fg, state.bg)];
+      if(state.gradient) ratios.push(contrast(state.fg2, state.bg));
+      const weakest = Math.min.apply(null, ratios);
+      if(weakest < 3) add(2, "Foreground contrast is too low for reliable scanning.");
+      else if(weakest < 4.5) add(1, "Foreground contrast is usable but could be stronger.");
+      if(luminance(state.fg) > luminance(state.bg)) add(1, "Light modules on a dark background are less widely supported.");
+      if(state.gradient && luminance(state.fg2) > luminance(state.bg)) add(1, "The gradient becomes lighter than the background at one end.");
     }
+    if(state.quiet < 4) add(state.quiet < 2 ? 2 : 1, "Quiet zone is below the recommended 4 modules.");
+    if(state.moduleShape === "dots") add(1, "Dot modules trade some scan tolerance for style.");
+    if(state.logoImg){
+      if(state.ec !== "H") add(2, "Use High error correction with a centre logo.");
+      if(state.logoSize > 25) add(1, "A large logo covers more QR data; test carefully.");
+    }
+    if(qr){
+      const modulePixels = state.size / (qr.getModuleCount() + state.quiet * 2);
+      if(modulePixels < 4) add(1, "Modules are small at this output width; use a larger export.");
+    }
+    if(!messages.length) messages.push("Contrast, spacing and recovery settings all look strong.");
+    messages.push("Always test the final code with a real phone before printing in bulk.");
+    setReliability(severity === 2 ? "risky" : severity === 1 ? "caution" : "good", severity === 2 ? "High risk" : severity === 1 ? "Use caution" : "Looks good", messages);
+  }
+  let detectorPromise = null;
+  async function getBarcodeDetector(){
+    if(!("BarcodeDetector" in window)) return null;
+    if(!detectorPromise){
+      detectorPromise = (async () => {
+        try{
+          const formats = BarcodeDetector.getSupportedFormats ? await BarcodeDetector.getSupportedFormats() : ["qr_code"];
+          return formats.includes("qr_code") ? new BarcodeDetector({formats:["qr_code"]}) : null;
+        }catch(e){ return null; }
+      })();
+    }
+    return detectorPromise;
+  }
+  async function verifyLocalDecode(version){
+    const detector = await getBarcodeDetector();
+    if(!detector || version !== renderVersion || !qr) return;
+    try{
+      const codes = await detector.detect(canvas);
+      if(version !== renderVersion) return;
+      if(codes.some(code => code.rawValue === currentPayload)){
+        const current = $("reliabilityState").textContent;
+        if(current === "Looks good") $("reliabilityState").textContent = "Locally decoded";
+      }else{
+        const existing = Array.from($("reliabilityList").children).map(item => item.textContent);
+        setReliability("risky", "Decode check failed", ["This browser could not decode the rendered image locally."].concat(existing));
+      }
+    }catch(e){}
   }
 
   /* ---------------- SVG export ---------------- */
@@ -992,7 +1290,7 @@
     if(state.frameOn && L.label){
       const fontPx = Math.round(L.labelH * 0.42);
       parts.push('<text x="' + (L.W / 2) + '" y="' + (L.qy + L.qs + L.labelH / 2) +
-        '" fill="' + frameTextColor() + '" font-family="Space Grotesk, system-ui, sans-serif" font-weight="700"' +
+        '" fill="' + frameTextColor() + '" font-family="system-ui, sans-serif" font-weight="700"' +
         ' font-size="' + fontPx + '" text-anchor="middle" dominant-baseline="central">' + escapeXml(L.label) + '</text>');
     }
     parts.push('</svg>');
@@ -1021,33 +1319,55 @@
     a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 3000);
   }
-  $("btnPng").addEventListener("click", () => {
-    canvas.toBlob(b => {
-      if(b){ downloadBlob(b, "qr-code.png"); flashButton($("btnPng"), "Downloaded ✓"); }
-    }, "image/png");
-  });
-  $("btnSvg").addEventListener("click", () => {
-    const svg = buildSvg();
-    if(svg){ downloadBlob(new Blob([svg], {type: "image/svg+xml"}), "qr-code.svg"); flashButton($("btnSvg"), "Downloaded ✓"); }
-  });
-  $("btnCopy").addEventListener("click", async () => {
-    try{
-      const blob = await new Promise(res => canvas.toBlob(res, "image/png"));
-      await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]);
-      flashButton($("btnCopy"), "Copied!");
-    }catch(e){
-      flashButton($("btnCopy"), "Copy not supported here");
+  function filenameStem(){
+    if(/^https?:\/\//i.test(currentPayload)){
+      try{
+        const host = new URL(currentPayload).hostname.replace(/^www\./i, "");
+        return host.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() || "website";
+      }catch(e){}
     }
-  });
-  // Mobile bar mirrors the main buttons
-  $("mBtnPng").addEventListener("click", () => $("btnPng").click());
-  $("mBtnSvg").addEventListener("click", () => $("btnSvg").click());
-  $("mBtnCopy").addEventListener("click", () => $("btnCopy").click());
-  function flashButton(btn, text){
-    const old = btn.textContent;
-    btn.textContent = text;
-    setTimeout(() => { btn.textContent = old; }, 1600);
+    const labels = {wifi:"wifi",email:"email",sms:"sms",vcard:"contact",link:"text"};
+    return labels[state.tab] || "qr-code";
   }
+  function canvasBlob(){
+    return new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+  }
+  async function downloadPng(){
+    const blob = await canvasBlob();
+    if(!blob) return showToast("PNG export failed. Please try again.");
+    downloadBlob(blob, filenameStem() + "-qr.png");
+    showToast("PNG downloaded");
+  }
+  function downloadSvg(){
+    const svg = buildSvg();
+    if(!svg) return;
+    downloadBlob(new Blob([svg], {type: "image/svg+xml"}), filenameStem() + "-qr.svg");
+    showToast("SVG downloaded");
+  }
+  async function copyImage(){
+    if(!canCopyImage) return showToast("Image copying needs HTTPS in this browser. Download PNG instead.");
+    try{
+      const blob = await canvasBlob();
+      await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]);
+      showToast("QR image copied");
+    }catch(e){
+      showToast("Could not copy the image. Download PNG instead.");
+    }
+  }
+  async function shareImage(){
+    if(!canShareFiles) return showToast("File sharing is not available in this browser.");
+    try{
+      const blob = await canvasBlob();
+      const file = new File([blob], filenameStem() + "-qr.png", {type:"image/png"});
+      await navigator.share({files:[file], title:"QR code"});
+    }catch(e){
+      if(e && e.name !== "AbortError") showToast("Could not open the share sheet.");
+    }
+  }
+  ["btnPng","mBtnPng"].forEach(id => $(id).addEventListener("click", downloadPng));
+  ["btnSvg","mBtnSvg"].forEach(id => $(id).addEventListener("click", downloadSvg));
+  ["btnCopy","mBtnCopy"].forEach(id => $(id).addEventListener("click", copyImage));
+  ["btnShare","mBtnShare"].forEach(id => $(id).addEventListener("click", shareImage));
 
   /* ---------------- Wiring ---------------- */
   // Throttle re-renders to one per animation frame (keeps 2048px redraws smooth on sliders)
@@ -1057,19 +1377,80 @@
     rafId = requestAnimationFrame(() => { rafId = null; render(); });
   }
 
-  // Tabs
-  document.querySelectorAll(".tab").forEach(t => {
-    t.addEventListener("click", () => {
-      document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x === t));
-      document.querySelectorAll(".tab-pane").forEach(p => p.hidden = p.dataset.pane !== t.dataset.tab);
-      state.tab = t.dataset.tab;
-      render();
+  // Accessible tabs: one tab stop plus arrow-key navigation.
+  const tabs = Array.from(document.querySelectorAll(".tab"));
+  function activateTab(tabName, moveFocus){
+    const active = tabs.find(tab => tab.dataset.tab === tabName) || tabs[0];
+    tabs.forEach(tab => {
+      const selected = tab === active;
+      tab.setAttribute("aria-selected", selected);
+      tab.tabIndex = selected ? 0 : -1;
+    });
+    document.querySelectorAll(".tab-pane").forEach(pane => { pane.hidden = pane.dataset.pane !== active.dataset.tab; });
+    state.tab = active.dataset.tab;
+    persistSettings();
+    if(moveFocus) active.focus();
+    render();
+  }
+  tabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => activateTab(tab.dataset.tab, false));
+    tab.addEventListener("keydown", event => {
+      let next = null;
+      if(event.key === "ArrowRight") next = (index + 1) % tabs.length;
+      if(event.key === "ArrowLeft") next = (index - 1 + tabs.length) % tabs.length;
+      if(event.key === "Home") next = 0;
+      if(event.key === "End") next = tabs.length - 1;
+      if(next !== null){ event.preventDefault(); activateTab(tabs[next].dataset.tab, true); }
     });
   });
 
   // Text inputs — re-render on any input in the content panes
   document.querySelectorAll(".tab-pane input, .tab-pane textarea, .tab-pane select")
     .forEach(el => el.addEventListener("input", scheduleRender));
+
+  $("urlFix").addEventListener("click", () => {
+    $("inpText").value = $("urlFix").dataset.value || $("inpText").value;
+    $("inpText").focus();
+    render();
+  });
+  const canReadClipboard = !!(window.isSecureContext && navigator.clipboard && navigator.clipboard.readText);
+  if(!canReadClipboard){
+    $("btnPaste").disabled = true;
+    $("btnPaste").title = "Clipboard paste requires HTTPS in this browser";
+  }
+  $("btnPaste").addEventListener("click", async () => {
+    try{
+      $("inpText").value = await navigator.clipboard.readText();
+      render();
+      showToast("Pasted from clipboard");
+    }catch(e){ showToast("Could not read the clipboard. Paste into the field manually."); }
+  });
+  $("btnExample").addEventListener("click", () => {
+    $("inpText").value = "https://example.com";
+    render();
+    showToast("Example link added");
+  });
+  const contentInputIds = ["inpText","wifiSsid","wifiPass","wifiHidden","emailTo","emailSubject","emailBody","smsNumber","smsBody","vcName","vcOrg","vcPhone","vcEmail","vcUrl"];
+  $("btnClearContent").addEventListener("click", () => {
+    contentInputIds.forEach(id => { const el = $(id); if(el.type === "checkbox") el.checked = false; else el.value = ""; });
+    $("wifiEnc").value = "WPA";
+    updateWifiPasswordVisibility();
+    render();
+    showToast("Content cleared; saved design kept");
+  });
+  $("wifiPassToggle").addEventListener("click", () => {
+    const visible = $("wifiPass").type === "text";
+    $("wifiPass").type = visible ? "password" : "text";
+    $("wifiPassToggle").textContent = visible ? "Show" : "Hide";
+    $("wifiPassToggle").setAttribute("aria-pressed", String(!visible));
+  });
+  function updateWifiPasswordVisibility(){
+    const open = $("wifiEnc").value === "nopass";
+    $("wifiPassField").hidden = open;
+    $("wifiPass").disabled = open;
+    if(open) $("wifiPass").value = "";
+  }
+  $("wifiEnc").addEventListener("change", () => { updateWifiPasswordVisibility(); render(); });
 
   // Colors
   function clearActiveSwatches(wrapId){
@@ -1078,10 +1459,24 @@
   function bindColor(inputId, hexId, key){
     $(inputId).addEventListener("input", e => {
       state[key] = e.target.value.toUpperCase();
-      $(hexId).textContent = state[key];
+      $(hexId).value = state[key];
       clearActiveSwatches(inputId === "frameColor" ? "frameSwatches" : "swatches");
+      persistSettings();
       scheduleRender();
     });
+    $(hexId).addEventListener("input", e => {
+      let value = e.target.value.trim().toUpperCase();
+      if(!value.startsWith("#")) value = "#" + value;
+      if(/^#[0-9A-F]{6}$/.test(value)){
+        state[key] = value;
+        $(inputId).value = value;
+        e.target.value = value;
+        clearActiveSwatches(inputId === "frameColor" ? "frameSwatches" : "swatches");
+        persistSettings();
+        scheduleRender();
+      }
+    });
+    $(hexId).addEventListener("blur", e => { e.target.value = state[key]; });
   }
   bindColor("fgColor", "fgHex", "fg");
   bindColor("bgColor", "bgHex", "bg");
@@ -1089,27 +1484,30 @@
 
   // Preset swatch pairs [fg, bg]
   const presets = [
-    ["#10142A", "#FFFFFF"],  // default ink on white
-    ["#000000", "#FFFFFF"],  // classic black on white
-    ["#0D47A1", "#E3F2FD"],  // Material Blue 900 on Blue 50
-    ["#4527A0", "#EDE7F6"],  // Material Deep Purple 800 on Deep Purple 50
-    ["#B71C1C", "#FFEBEE"],  // Material Red 900 on Red 50
-    ["#004D40", "#E0F2F1"],  // Material Teal 900 on Teal 50
-    ["#E65100", "#FFF3E0"],  // Material Orange 900 on Orange 50
-    ["#FFFFFF", "#10142A"]   // inverted: white on ink
+    ["#10142A", "#FFFFFF", "Quiet Response ink"],
+    ["#000000", "#FFFFFF", "Classic black on white"],
+    ["#0D47A1", "#E3F2FD", "Deep blue"],
+    ["#4527A0", "#EDE7F6", "Deep purple"],
+    ["#B71C1C", "#FFEBEE", "Deep red"],
+    ["#004D40", "#E0F2F1", "Deep teal"],
+    ["#E65100", "#FFF3E0", "Deep orange"],
+    ["#FFFFFF", "#10142A", "Inverted white on ink"]
   ];
   const swWrap = $("swatches");
-  presets.forEach(([f, b]) => {
+  presets.forEach(([f, b, name]) => {
     const btn = document.createElement("button");
     btn.className = "swatch";
     btn.style.background = "linear-gradient(135deg," + f + " 50%," + b + " 50%)";
-    btn.setAttribute("aria-label", "Use " + f + " on " + b);
+    btn.dataset.fg = f; btn.dataset.bg = b;
+    btn.title = name;
+    btn.setAttribute("aria-label", "Use " + name + ", " + f + " on " + b);
     btn.addEventListener("click", () => {
       state.fg = f; state.bg = b;
       $("fgColor").value = f; $("bgColor").value = b;
-      $("fgHex").textContent = f; $("bgHex").textContent = b;
+      $("fgHex").value = f; $("bgHex").value = b;
       clearActiveSwatches("swatches");
       btn.classList.add("active");
+      persistSettings();
       render();
     });
     swWrap.appendChild(btn);
@@ -1119,22 +1517,25 @@
   $("transparentBg").addEventListener("change", e => {
     state.transparent = e.target.checked;
     $("canvasWrap").classList.toggle("transparent", state.transparent);
+    persistSettings();
     render();
   });
   $("useGradient").addEventListener("change", e => {
     state.gradient = e.target.checked;
     $("gradientField").hidden = !state.gradient;
+    persistSettings();
     render();
   });
-  $("logoPad").addEventListener("change", e => { state.logoPad = e.target.checked; render(); });
+  $("logoPad").addEventListener("change", e => { state.logoPad = e.target.checked; persistSettings(); render(); });
 
   // Frame
   $("frameOn").addEventListener("change", e => {
     state.frameOn = e.target.checked;
     $("frameFields").hidden = !state.frameOn;
+    persistSettings();
     render();
   });
-  $("frameLabel").addEventListener("input", e => { state.frameLabel = e.target.value; scheduleRender(); });
+  $("frameLabel").addEventListener("input", e => { state.frameLabel = e.target.value; persistSettings(); scheduleRender(); });
   bindColor("frameColor", "frameHex", "frameColor");
 
   // Frame color presets — label text auto-switches between dark ink and white for contrast
@@ -1161,9 +1562,10 @@
     btn.addEventListener("click", () => {
       state.frameColor = col;
       $("frameColor").value = col;
-      $("frameHex").textContent = col;
+      $("frameHex").value = col;
       clearActiveSwatches("frameSwatches");
       btn.classList.add("active");
+      persistSettings();
       render();
     });
     fsWrap.appendChild(btn);
@@ -1176,6 +1578,7 @@
       b.addEventListener("click", () => {
         seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
         state[key] = b.dataset.val;
+        persistSettings();
         render();
       });
     });
@@ -1183,30 +1586,49 @@
   bindSeg("segModule", "moduleShape");
   bindSeg("segEyes", "eyeShape");
 
-  // Sliders
-  $("qrSize").addEventListener("input", e => {
-    state.size = +e.target.value;
-    $("qrSizeVal").textContent = state.size + " px";
-    scheduleRender();
+  // Output presets and precise custom dimensions.
+  function syncSizePresets(){
+    $("sizePresets").querySelectorAll("button").forEach(button => button.setAttribute("aria-pressed", String(+button.dataset.size === state.size)));
+  }
+  $("sizePresets").querySelectorAll("button").forEach(button => button.addEventListener("click", () => {
+    state.size = +button.dataset.size;
+    $("qrSize").value = state.size;
+    syncSizePresets();
+    persistSettings();
+    render();
+  }));
+  $("qrSize").addEventListener("change", e => {
+    state.size = Math.min(2048, Math.max(256, Math.round(+e.target.value || 1024)));
+    e.target.value = state.size;
+    syncSizePresets();
+    persistSettings();
+    render();
   });
-  $("quietZone").addEventListener("input", e => {
+  $("quietZone").addEventListener("change", e => {
     state.quiet = +e.target.value;
-    $("quietZoneVal").textContent = state.quiet;
-    scheduleRender();
+    persistSettings();
+    render();
   });
   $("logoSize").addEventListener("input", e => {
     state.logoSize = +e.target.value;
-    $("logoSizeVal").textContent = state.logoSize + " %";
+    $("logoSizeVal").textContent = state.logoSize + "%";
+    persistSettings();
     scheduleRender();
   });
 
-  // Reset
+  // Reset design only; entered content is deliberately preserved.
   $("btnReset").addEventListener("click", () => {
-    if(confirm("Reset all settings and content to defaults?")) location.reload();
+    const currentTab = state.tab;
+    Object.assign(state, defaults, {tab:currentTab, logoImg:null});
+    removeLogo(false);
+    applyStateToControls();
+    persistSettings();
+    render();
+    showToast("Design reset; content kept");
   });
 
   // Error correction
-  $("ecLevel").addEventListener("change", e => { state.ec = e.target.value; render(); });
+  $("ecLevel").addEventListener("change", e => { state.ec = e.target.value; persistSettings(); render(); });
 
   // Logo upload
   const drop = $("logoDrop"), fileInput = $("logoFile");
@@ -1223,7 +1645,9 @@
     if(f) loadLogo(f);
   });
   function loadLogo(file){
-    if(!file.type.startsWith("image/")) return;
+    const allowed = ["image/png","image/jpeg","image/webp","image/svg+xml"];
+    if(!allowed.includes(file.type)) return showToast("Choose a PNG, JPG, WebP or SVG image.");
+    if(file.size > 5 * 1024 * 1024) return showToast("That image is over 5 MB. Choose a smaller file.");
     const reader = new FileReader();
     reader.onload = () => {
       const img = new Image();
@@ -1233,28 +1657,75 @@
         const thumb = img.cloneNode();
         $("logoDropText").appendChild(thumb);
         $("logoDropText").appendChild(document.createTextNode(file.name));
-        $("logoActions").hidden = false;
-        // Nudge error correction up for logo reliability
-        if(state.ec === "L" || state.ec === "M"){
+        $("logoOptions").hidden = false;
+        // Use the strongest recovery level and explain the automatic change.
+        if(state.ec !== "H"){
           state.ec = "H";
           $("ecLevel").value = "H";
+          showToast("Error correction raised to High for the logo");
         }
+        persistSettings();
         render();
       };
+      img.onerror = () => showToast("That image could not be opened.");
       img.src = reader.result;
     };
+    reader.onerror = () => showToast("That image could not be read.");
     reader.readAsDataURL(file);
   }
-  $("logoRemove").addEventListener("click", () => {
+  function removeLogo(shouldRender = true){
     state.logoImg = null;
     fileInput.value = "";
     $("logoDropText").textContent = "Click or drop an image here (PNG, JPG, SVG)";
-    $("logoActions").hidden = true;
-    render();
-  });
+    $("logoOptions").hidden = true;
+    if(shouldRender){ render(); showToast("Logo removed"); }
+  }
+  $("logoRemove").addEventListener("click", () => removeLogo(true));
 
-  // First paint
-  render();
+  function applyStateToControls(){
+    [["fgColor","fgHex","fg"],["bgColor","bgHex","bg"],["fgColor2","fg2Hex","fg2"],["frameColor","frameHex","frameColor"]].forEach(([picker, hex, key]) => {
+      $(picker).value = state[key];
+      $(hex).value = state[key];
+    });
+    $("transparentBg").checked = !!state.transparent;
+    $("useGradient").checked = !!state.gradient;
+    $("gradientField").hidden = !state.gradient;
+    $("canvasWrap").classList.toggle("transparent", !!state.transparent);
+    $("logoSize").value = state.logoSize;
+    $("logoSizeVal").textContent = state.logoSize + "%";
+    $("logoPad").checked = !!state.logoPad;
+    $("frameOn").checked = !!state.frameOn;
+    $("frameFields").hidden = !state.frameOn;
+    $("frameLabel").value = state.frameLabel;
+    $("framePanel").open = !!state.frameOn;
+    $("qrSize").value = state.size;
+    $("quietZone").value = String(state.quiet);
+    $("ecLevel").value = state.ec;
+    [["segModule","moduleShape"],["segEyes","eyeShape"]].forEach(([id,key]) => {
+      $(id).querySelectorAll("button").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.val === state[key])));
+    });
+    $("swatches").querySelectorAll(".swatch").forEach(button => button.classList.toggle("active", button.dataset.fg === state.fg && button.dataset.bg === state.bg));
+    syncSizePresets();
+  }
+
+  // Capability-aware actions avoid presenting controls that cannot work.
+  $("copyHelp").hidden = canCopyImage;
+  if(!canCopyImage){
+    $("btnCopy").title = $("mBtnCopy").title = "Image copying requires HTTPS in this browser";
+  }
+  $("btnShare").hidden = $("mBtnShare").hidden = !canShareFiles;
+  $("btnCopy").classList.toggle("full", !canShareFiles);
+  $("mobileBar").classList.toggle("no-share", !canShareFiles);
+
+  applyStateToControls();
+  updateWifiPasswordVisibility();
+  if(typeof qrcode !== "function"){
+    $("noticeError").textContent = "The embedded QR engine could not start. Re-download this HTML file.";
+    $("noticeError").classList.add("show");
+    setButtons(false);
+  }else{
+    activateTab(state.tab, false);
+  }
 })();
 </script>
 </body>
