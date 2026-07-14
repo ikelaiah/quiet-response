@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiet Response — QR Code Generator</title>
+<meta name="description" content="A free, single-file QR code generator. Custom colors, module shapes, logos, gradients, PNG & SVG export. No tracking, no server — everything happens in your browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<style>
+  :root{
+    --paper:#F1F3F8;
+    --panel:#FFFFFF;
+    --ink:#10142A;
+    --ink-soft:#5A6178;
+    --line:#DCE1EC;
+    --accent:#2B4BF2;
+    --accent-ink:#1B33C7;
+    --accent-soft:#E7EBFE;
+    --warn:#B4540A;
+    --warn-soft:#FDEEDC;
+    --radius:14px;
+    --font-display:"Space Grotesk",system-ui,sans-serif;
+    --font-mono:"Space Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-display);
+    font-size:15px;
+    line-height:1.5;
+    min-height:100vh;
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    max-width:1160px;margin:0 auto;
+    padding:28px 24px 8px;
+    display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand-mark{
+    width:34px;height:34px;flex:none;
+    display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);gap:2px;
+  }
+  .brand-mark span{background:var(--ink);border-radius:2px}
+  .brand-mark span.a{background:var(--accent)}
+  .brand-mark span.o{background:transparent}
+  h1{font-size:1.35rem;font-weight:700;letter-spacing:-0.01em}
+  h1 small{display:block;font-size:.78rem;font-weight:500;color:var(--ink-soft);letter-spacing:.02em}
+  .header-note{font-family:var(--font-mono);font-size:.72rem;color:var(--ink-soft)}
+
+  /* ---------- Layout ---------- */
+  main{
+    max-width:1160px;margin:0 auto;
+    padding:18px 24px 64px;
+    display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:24px;
+    align-items:start;
+  }
+  @media (max-width:900px){
+    main{grid-template-columns:1fr}
+    .preview-col{order:-1;position:static}
+  }
+
+  /* ---------- Panels ---------- */
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:20px;
+  }
+  .panel + .panel{margin-top:18px}
+  .panel h2{
+    font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+    color:var(--ink-soft);margin-bottom:14px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .panel h2::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* ---------- Tabs ---------- */
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .tab{
+    font:inherit;font-weight:600;font-size:.85rem;
+    padding:7px 14px;border-radius:999px;
+    border:1px solid var(--line);background:var(--panel);color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .tab:hover{border-color:var(--accent);color:var(--accent-ink)}
+  .tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+
+  /* ---------- Fields ---------- */
+  .field{margin-bottom:12px}
+  .field:last-child{margin-bottom:0}
+  label{display:block;font-size:.82rem;font-weight:600;margin-bottom:5px}
+  label .hint{font-weight:400;color:var(--ink-soft)}
+  input[type=text],input[type=url],input[type=email],input[type=tel],input[type=password],textarea,select{
+    width:100%;
+    font:inherit;font-size:.92rem;
+    padding:9px 12px;
+    border:1px solid var(--line);border-radius:9px;
+    background:#FAFBFE;color:var(--ink);
+  }
+  textarea{resize:vertical;min-height:74px}
+  input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-visible,input[type=range]:focus-visible{
+    outline:2px solid var(--accent);outline-offset:2px;
+  }
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:480px){.row{grid-template-columns:1fr}}
+
+  /* ---------- Sliders ---------- */
+  .slider-field{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+  .slider-field label{grid-column:1/-1;margin-bottom:0}
+  input[type=range]{
+    width:100%;accent-color:var(--accent);height:26px;cursor:pointer;background:transparent;
+  }
+  .value{
+    font-family:var(--font-mono);font-size:.78rem;
+    background:var(--accent-soft);color:var(--accent-ink);
+    padding:3px 8px;border-radius:6px;min-width:64px;text-align:center;
+  }
+
+  /* ---------- Color & style pickers ---------- */
+  .color-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:480px){.color-grid{grid-template-columns:1fr}}
+  .color-input{
+    display:flex;align-items:center;gap:10px;
+    border:1px solid var(--line);border-radius:9px;padding:6px 10px;background:#FAFBFE;
+  }
+  .color-input input[type=color]{
+    width:34px;height:34px;border:none;border-radius:7px;padding:0;background:none;cursor:pointer;flex:none;
+  }
+  .color-input input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+  .color-input input[type=color]::-webkit-color-swatch{border:1px solid var(--line);border-radius:7px}
+  .color-input .hexval{font-family:var(--font-mono);font-size:.78rem;color:var(--ink-soft)}
+  .color-input .role{font-size:.8rem;font-weight:600}
+  .swatches{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .swatch{
+    width:26px;height:26px;border-radius:8px;cursor:pointer;
+    border:1px solid rgba(16,20,42,.15);padding:0;
+  }
+  .swatch:hover{transform:scale(1.12)}
+
+  .seg{display:flex;gap:0;border:1px solid var(--line);border-radius:9px;overflow:hidden;width:100%}
+  .seg button{
+    flex:1;font:inherit;font-size:.82rem;font-weight:600;
+    padding:8px 4px;border:none;background:var(--panel);color:var(--ink-soft);cursor:pointer;
+    border-left:1px solid var(--line);
+  }
+  .seg button:first-child{border-left:none}
+  .seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-ink)}
+  .seg button:hover{color:var(--ink)}
+
+  .checkline{display:flex;align-items:center;gap:9px;font-size:.86rem;font-weight:500;cursor:pointer;margin-bottom:0}
+  .checkline input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+
+  /* ---------- Logo ---------- */
+  .logo-drop{
+    border:1.5px dashed var(--line);border-radius:10px;
+    padding:16px;text-align:center;cursor:pointer;
+    color:var(--ink-soft);font-size:.86rem;background:#FAFBFE;
+  }
+  .logo-drop:hover,.logo-drop.dragover{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-soft)}
+  .logo-drop img{max-width:56px;max-height:56px;display:block;margin:0 auto 8px;border-radius:8px}
+  .logo-actions{display:flex;gap:8px;margin-top:10px}
+
+  /* ---------- Preview column ---------- */
+  .preview-col{position:sticky;top:18px}
+  .viewfinder{
+    position:relative;
+    border-radius:var(--radius);
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:26px;
+  }
+  .viewfinder::before,.viewfinder::after,
+  .vf-corner::before,.vf-corner::after{
+    content:"";position:absolute;width:22px;height:22px;
+    border:2.5px solid var(--accent);
+  }
+  .viewfinder::before{top:10px;left:10px;border-right:none;border-bottom:none;border-radius:6px 0 0 0}
+  .viewfinder::after{top:10px;right:10px;border-left:none;border-bottom:none;border-radius:0 6px 0 0}
+  .vf-corner::before{bottom:10px;left:10px;border-right:none;border-top:none;border-radius:0 0 0 6px}
+  .vf-corner::after{bottom:10px;right:10px;border-left:none;border-top:none;border-radius:0 0 6px 0}
+  .canvas-wrap{
+    position:relative;overflow:hidden;border-radius:8px;
+    line-height:0;
+  }
+  .canvas-wrap.transparent{
+    background-image:
+      linear-gradient(45deg,#E4E7F0 25%,transparent 25%,transparent 75%,#E4E7F0 75%),
+      linear-gradient(45deg,#E4E7F0 25%,transparent 25%,transparent 75%,#E4E7F0 75%);
+    background-size:18px 18px;background-position:0 0,9px 9px;
+  }
+  #qrCanvas{width:100%;height:auto;display:block}
+  .scanline{
+    position:absolute;left:0;right:0;top:-8%;height:8%;
+    background:linear-gradient(to bottom,transparent,rgba(43,75,242,.18),transparent);
+    animation:scan 3.2s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes scan{0%,100%{top:-8%}50%{top:100%}}
+  @media (prefers-reduced-motion:reduce){
+    .scanline{display:none}
+    html{scroll-behavior:auto}
+    .swatch:hover{transform:none}
+  }
+  .preview-meta{
+    display:flex;justify-content:space-between;gap:10px;
+    margin-top:14px;font-family:var(--font-mono);font-size:.72rem;color:var(--ink-soft);
+    flex-wrap:wrap;
+  }
+  .notice{
+    display:none;margin-top:12px;padding:9px 12px;border-radius:9px;
+    font-size:.82rem;font-weight:500;
+  }
+  .notice.show{display:block}
+  .notice.warn{background:var(--warn-soft);color:var(--warn)}
+  .notice.info{background:var(--accent-soft);color:var(--accent-ink)}
+
+  /* ---------- Buttons ---------- */
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .btn{
+    font:inherit;font-weight:600;font-size:.9rem;
+    padding:11px 14px;border-radius:10px;cursor:pointer;
+    border:1px solid var(--line);background:var(--panel);color:var(--ink);
+  }
+  .btn:hover{border-color:var(--ink)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.primary:hover{background:var(--accent-ink);border-color:var(--accent-ink)}
+  .btn.small{font-size:.8rem;padding:7px 10px}
+  .btn.full{grid-column:1/-1}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+
+  footer{
+    max-width:1160px;margin:0 auto;padding:0 24px 40px;
+    font-size:.8rem;color:var(--ink-soft);
+  }
+  footer a{color:var(--accent-ink)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-mark" aria-hidden="true">
+      <span></span><span class="o"></span><span></span><span class="a"></span>
+      <span class="o"></span><span></span><span class="o"></span><span></span>
+      <span></span><span class="o"></span><span class="a"></span><span class="o"></span>
+      <span class="a"></span><span></span><span class="o"></span><span></span>
+    </div>
+    <h1>Quiet Response<small>QR code generator — free, private, in-browser</small></h1>
+  </div>
+  <div class="header-note">no server · no tracking · nothing leaves this page</div>
+</header>
+
+<main>
+  <!-- ============ LEFT: CONTROLS ============ -->
+  <div class="controls-col">
+
+    <section class="panel">
+      <h2>Content</h2>
+      <div class="tabs" role="tablist" aria-label="Content type">
+        <button class="tab" role="tab" aria-selected="true" data-tab="link">Link / Text</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="wifi">Wi-Fi</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="email">Email</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="sms">SMS</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="vcard">Contact</button>
+      </div>
+
+      <div class="tab-pane" data-pane="link">
+        <div class="field">
+          <label for="inpText">Link or text</label>
+          <textarea id="inpText" placeholder="https://example.com">https://github.com</textarea>
+        </div>
+      </div>
+
+      <div class="tab-pane" data-pane="wifi" hidden>
+        <div class="row">
+          <div class="field">
+            <label for="wifiSsid">Network name (SSID)</label>
+            <input type="text" id="wifiSsid" placeholder="MyNetwork">
+          </div>
+          <div class="field">
+            <label for="wifiPass">Password</label>
+            <input type="text" id="wifiPass" placeholder="••••••••">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="wifiEnc">Security</label>
+            <select id="wifiEnc">
+              <option value="WPA">WPA / WPA2 / WPA3</option>
+              <option value="WEP">WEP</option>
+              <option value="nopass">Open (no password)</option>
+            </select>
+          </div>
+          <div class="field" style="align-self:end">
+            <label class="checkline"><input type="checkbox" id="wifiHidden"> Hidden network</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane" data-pane="email" hidden>
+        <div class="field">
+          <label for="emailTo">To</label>
+          <input type="email" id="emailTo" placeholder="hello@example.com">
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="emailSubject">Subject <span class="hint">(optional)</span></label>
+            <input type="text" id="emailSubject">
+          </div>
+          <div class="field">
+            <label for="emailBody">Message <span class="hint">(optional)</span></label>
+            <input type="text" id="emailBody">
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane" data-pane="sms" hidden>
+        <div class="row">
+          <div class="field">
+            <label for="smsNumber">Phone number</label>
+            <input type="tel" id="smsNumber" placeholder="+61 400 000 000">
+          </div>
+          <div class="field">
+            <label for="smsBody">Message <span class="hint">(optional)</span></label>
+            <input type="text" id="smsBody">
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane" data-pane="vcard" hidden>
+        <div class="row">
+          <div class="field">
+            <label for="vcName">Full name</label>
+            <input type="text" id="vcName" placeholder="Jane Citizen">
+          </div>
+          <div class="field">
+            <label for="vcOrg">Organisation <span class="hint">(optional)</span></label>
+            <input type="text" id="vcOrg">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="vcPhone">Phone <span class="hint">(optional)</span></label>
+            <input type="tel" id="vcPhone">
+          </div>
+          <div class="field">
+            <label for="vcEmail">Email <span class="hint">(optional)</span></label>
+            <input type="email" id="vcEmail">
+          </div>
+        </div>
+        <div class="field">
+          <label for="vcUrl">Website <span class="hint">(optional)</span></label>
+          <input type="url" id="vcUrl">
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Appearance</h2>
+      <div class="color-grid">
+        <div>
+          <div class="color-input">
+            <input type="color" id="fgColor" value="#10142A" aria-label="Foreground color">
+            <div><div class="role">Foreground</div><div class="hexval" id="fgHex">#10142A</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="color-input">
+            <input type="color" id="bgColor" value="#FFFFFF" aria-label="Background color">
+            <div><div class="role">Background</div><div class="hexval" id="bgHex">#FFFFFF</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="swatches" id="swatches" aria-label="Preset color pairs"></div>
+
+      <div class="row" style="margin-top:14px">
+        <label class="checkline"><input type="checkbox" id="transparentBg"> Transparent background</label>
+        <label class="checkline"><input type="checkbox" id="useGradient"> Gradient foreground</label>
+      </div>
+
+      <div class="field" id="gradientField" hidden style="margin-top:12px">
+        <div class="color-input" style="max-width:280px">
+          <input type="color" id="fgColor2" value="#2B4BF2" aria-label="Gradient end color">
+          <div><div class="role">Gradient end</div><div class="hexval" id="fg2Hex">#2B4BF2</div></div>
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:14px">
+        <label>Module shape</label>
+        <div class="seg" id="segModule" role="group" aria-label="Module shape">
+          <button aria-pressed="true"  data-val="square">Square</button>
+          <button aria-pressed="false" data-val="rounded">Rounded</button>
+          <button aria-pressed="false" data-val="dots">Dots</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Corner eyes</label>
+        <div class="seg" id="segEyes" role="group" aria-label="Corner eye shape">
+          <button aria-pressed="true"  data-val="square">Square</button>
+          <button aria-pressed="false" data-val="rounded">Rounded</button>
+          <button aria-pressed="false" data-val="circle">Circle</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Logo</h2>
+      <div class="logo-drop" id="logoDrop" tabindex="0" role="button" aria-label="Upload a center logo">
+        <span id="logoDropText">Click or drop an image here (PNG, JPG, SVG)</span>
+      </div>
+      <input type="file" id="logoFile" accept="image/*" hidden>
+      <div class="logo-actions" id="logoActions" hidden>
+        <button class="btn small" id="logoRemove">Remove logo</button>
+      </div>
+      <div class="slider-field" style="margin-top:14px">
+        <label for="logoSize">Logo size</label>
+        <input type="range" id="logoSize" min="12" max="30" value="20" step="1">
+        <span class="value" id="logoSizeVal">20 %</span>
+      </div>
+      <label class="checkline" style="margin-top:8px"><input type="checkbox" id="logoPad" checked> Clear space behind logo</label>
+    </section>
+
+    <section class="panel">
+      <h2>Output</h2>
+      <div class="slider-field">
+        <label for="qrSize">Image size</label>
+        <input type="range" id="qrSize" min="256" max="2048" step="64" value="1024">
+        <span class="value" id="qrSizeVal">1024 px</span>
+      </div>
+      <div class="slider-field" style="margin-top:10px">
+        <label for="quietZone">Quiet zone <span class="hint">(blank border, in modules)</span></label>
+        <input type="range" id="quietZone" min="0" max="8" step="1" value="4">
+        <span class="value" id="quietZoneVal">4</span>
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label for="ecLevel">Error correction <span class="hint">(higher survives more damage — and logos)</span></label>
+        <select id="ecLevel">
+          <option value="L">L — Low (7%)</option>
+          <option value="M" selected>M — Medium (15%)</option>
+          <option value="Q">Q — Quartile (25%)</option>
+          <option value="H">H — High (30%)</option>
+        </select>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ RIGHT: PREVIEW ============ -->
+  <div class="preview-col">
+    <div class="viewfinder">
+      <div class="vf-corner" aria-hidden="true"></div>
+      <div class="canvas-wrap" id="canvasWrap">
+        <canvas id="qrCanvas" width="1024" height="1024" role="img" aria-label="Generated QR code preview"></canvas>
+        <div class="scanline" aria-hidden="true"></div>
+      </div>
+      <div class="preview-meta">
+        <span id="metaModules">— × — modules</span>
+        <span id="metaVersion">version —</span>
+        <span id="metaChars">0 chars</span>
+      </div>
+      <div class="notice warn" id="noticeError" role="alert"></div>
+      <div class="notice info" id="noticeInfo" role="status"></div>
+      <div class="actions">
+        <button class="btn primary" id="btnPng">Download PNG</button>
+        <button class="btn" id="btnSvg">Download SVG</button>
+        <button class="btn full" id="btnCopy">Copy image to clipboard</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Built as a single HTML file — open the source, fork it, host it anywhere.
+  Always test a printed code with a real phone camera before mass-producing it.
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- State ---------------- */
+  const state = {
+    tab: "link",
+    fg: "#10142A",
+    fg2: "#2B4BF2",
+    bg: "#FFFFFF",
+    transparent: false,
+    gradient: false,
+    moduleShape: "square",
+    eyeShape: "square",
+    size: 1024,
+    quiet: 4,
+    ec: "M",
+    logoImg: null,
+    logoSize: 20,
+    logoPad: true
+  };
+
+  const $ = id => document.getElementById(id);
+  const canvas = $("qrCanvas");
+  const ctx = canvas.getContext("2d");
+
+  /* ---------------- Payload builders ---------------- */
+  const wifiEscape = s => s.replace(/([\\;,:"'])/g, "\\$1");
+
+  function buildPayload(){
+    switch(state.tab){
+      case "wifi": {
+        const ssid = $("wifiSsid").value.trim();
+        if(!ssid) return "";
+        const enc = $("wifiEnc").value;
+        let s = "WIFI:T:" + enc + ";S:" + wifiEscape(ssid) + ";";
+        if(enc !== "nopass") s += "P:" + wifiEscape($("wifiPass").value) + ";";
+        if($("wifiHidden").checked) s += "H:true;";
+        return s + ";";
+      }
+      case "email": {
+        const to = $("emailTo").value.trim();
+        if(!to) return "";
+        const params = [];
+        if($("emailSubject").value) params.push("subject=" + encodeURIComponent($("emailSubject").value));
+        if($("emailBody").value)    params.push("body=" + encodeURIComponent($("emailBody").value));
+        return "mailto:" + to + (params.length ? "?" + params.join("&") : "");
+      }
+      case "sms": {
+        const num = $("smsNumber").value.trim();
+        if(!num) return "";
+        return "SMSTO:" + num + ":" + $("smsBody").value;
+      }
+      case "vcard": {
+        const name = $("vcName").value.trim();
+        if(!name) return "";
+        const lines = ["BEGIN:VCARD","VERSION:3.0","FN:" + name];
+        if($("vcOrg").value)   lines.push("ORG:" + $("vcOrg").value);
+        if($("vcPhone").value) lines.push("TEL:" + $("vcPhone").value);
+        if($("vcEmail").value) lines.push("EMAIL:" + $("vcEmail").value);
+        if($("vcUrl").value)   lines.push("URL:" + $("vcUrl").value);
+        lines.push("END:VCARD");
+        return lines.join("\n");
+      }
+      default:
+        return $("inpText").value.trim();
+    }
+  }
+
+  /* ---------------- QR building ---------------- */
+  let qr = null;
+
+  function buildQr(payload){
+    qr = null;
+    if(!payload) return "Enter some content to generate a code.";
+    try{
+      const q = qrcode(0, state.ec);
+      q.addData(payload);
+      q.make();
+      qr = q;
+      return null;
+    }catch(e){
+      return "Content is too long for this error-correction level. Shorten it or lower the level.";
+    }
+  }
+
+  /* Finder ("eye") cells live in three 7×7 corners; skip them in the body pass. */
+  function inFinder(r, c, n){
+    return (r < 7 && c < 7) || (r < 7 && c >= n - 7) || (r >= n - 7 && c < 7);
+  }
+
+  function roundedRectPath(p, x, y, w, h, r){
+    r = Math.min(r, w / 2, h / 2);
+    p.moveTo(x + r, y);
+    p.arcTo(x + w, y, x + w, y + h, r);
+    p.arcTo(x + w, y + h, x, y + h, r);
+    p.arcTo(x, y + h, x, y, r);
+    p.arcTo(x, y, x + w, y, r);
+    p.closePath();
+  }
+
+  function eyeRadius(units){ // units = width in modules being drawn
+    if(state.eyeShape === "square") return 0;
+    if(state.eyeShape === "circle") return units / 2;
+    return units * 0.3;
+  }
+
+  /* ---------------- Canvas rendering ---------------- */
+  function render(){
+    const payload = buildPayload();
+    const err = buildQr(payload);
+    const errBox = $("noticeError");
+
+    canvas.width = state.size;
+    canvas.height = state.size;
+    ctx.clearRect(0, 0, state.size, state.size);
+
+    if(err){
+      errBox.textContent = err;
+      errBox.classList.add("show");
+      $("metaModules").textContent = "— × — modules";
+      $("metaVersion").textContent = "version —";
+      $("metaChars").textContent = payload.length + " chars";
+      setButtons(false);
+      return;
+    }
+    errBox.classList.remove("show");
+    setButtons(true);
+
+    const n = qr.getModuleCount();
+    const total = n + state.quiet * 2;
+    const m = state.size / total;           // module size in px
+    const off = state.quiet * m;            // quiet-zone offset
+
+    // Background
+    if(!state.transparent){
+      ctx.fillStyle = state.bg;
+      ctx.fillRect(0, 0, state.size, state.size);
+    }
+
+    // Foreground fill (solid or gradient)
+    let fill;
+    if(state.gradient){
+      fill = ctx.createLinearGradient(0, 0, state.size, state.size);
+      fill.addColorStop(0, state.fg);
+      fill.addColorStop(1, state.fg2);
+    }else{
+      fill = state.fg;
+    }
+    ctx.fillStyle = fill;
+
+    // Body modules
+    const body = new Path2D();
+    for(let r = 0; r < n; r++){
+      for(let c = 0; c < n; c++){
+        if(!qr.isDark(r, c) || inFinder(r, c, n)) continue;
+        const x = off + c * m, y = off + r * m;
+        if(state.moduleShape === "dots"){
+          body.moveTo(x + m / 2 + m * 0.42, y + m / 2);
+          body.arc(x + m / 2, y + m / 2, m * 0.42, 0, Math.PI * 2);
+        }else if(state.moduleShape === "rounded"){
+          roundedRectPath(body, x, y, m + 0.5, m + 0.5, m * 0.34);
+        }else{
+          body.rect(x, y, m + 0.5, m + 0.5);
+        }
+      }
+    }
+    ctx.fill(body);
+
+    // Finder eyes (drawn as ring + pupil so they can be styled)
+    const eyes = [[0, 0], [n - 7, 0], [0, n - 7]]; // [col, row]
+    for(const [ec_, er] of eyes){
+      const x = off + ec_ * m, y = off + er * m;
+      // outer 7×7
+      const outer = new Path2D();
+      roundedRectPath(outer, x, y, 7 * m, 7 * m, eyeRadius(7) * m);
+      ctx.fillStyle = fill;
+      ctx.fill(outer);
+      // inner 5×5 punched in background
+      const mid = new Path2D();
+      roundedRectPath(mid, x + m, y + m, 5 * m, 5 * m, eyeRadius(5) * m);
+      if(state.transparent){
+        ctx.save();
+        ctx.globalCompositeOperation = "destination-out";
+        ctx.fill(mid);
+        ctx.restore();
+      }else{
+        ctx.fillStyle = state.bg;
+        ctx.fill(mid);
+      }
+      // pupil 3×3
+      const pupil = new Path2D();
+      roundedRectPath(pupil, x + 2 * m, y + 2 * m, 3 * m, 3 * m, eyeRadius(3) * m);
+      ctx.fillStyle = fill;
+      ctx.fill(pupil);
+    }
+
+    // Logo
+    if(state.logoImg){
+      const codePx = n * m;
+      const lw = codePx * (state.logoSize / 100);
+      const lx = (state.size - lw) / 2, ly = (state.size - lw) / 2;
+      if(state.logoPad){
+        const pad = lw * 0.12;
+        const p = new Path2D();
+        roundedRectPath(p, lx - pad, ly - pad, lw + pad * 2, lw + pad * 2, (lw + pad * 2) * 0.18);
+        if(state.transparent){
+          ctx.save();
+          ctx.globalCompositeOperation = "destination-out";
+          ctx.fill(p);
+          ctx.restore();
+        }else{
+          ctx.fillStyle = state.bg;
+          ctx.fill(p);
+        }
+      }
+      const ratio = state.logoImg.naturalWidth / state.logoImg.naturalHeight || 1;
+      let dw = lw, dh = lw;
+      if(ratio > 1) dh = lw / ratio; else dw = lw * ratio;
+      ctx.drawImage(state.logoImg, lx + (lw - dw) / 2, ly + (lw - dh) / 2, dw, dh);
+    }
+
+    // Meta + hints
+    $("metaModules").textContent = n + " × " + n + " modules";
+    $("metaVersion").textContent = "version " + ((n - 17) / 4) + " · EC " + state.ec;
+    $("metaChars").textContent = payload.length + " chars";
+    updateHints();
+  }
+
+  function setButtons(on){
+    $("btnPng").disabled = !on;
+    $("btnSvg").disabled = !on;
+    $("btnCopy").disabled = !on;
+  }
+
+  /* ---------------- Scannability hints ---------------- */
+  function luminance(hex){
+    const v = parseInt(hex.slice(1), 16);
+    const f = x => { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); };
+    return 0.2126 * f(v >> 16 & 255) + 0.7152 * f(v >> 8 & 255) + 0.0722 * f(v & 255);
+  }
+  function contrast(a, b){
+    const l1 = luminance(a), l2 = luminance(b);
+    return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+  }
+  function updateHints(){
+    const info = $("noticeInfo");
+    const msgs = [];
+    if(!state.transparent && contrast(state.fg, state.bg) < 3)
+      msgs.push("Low contrast between foreground and background — some scanners may struggle.");
+    if(state.logoImg && (state.ec === "L" || state.ec === "M"))
+      msgs.push("A logo covers data. Error correction H is recommended when using a logo.");
+    if(state.quiet === 0)
+      msgs.push("A quiet zone of at least 4 modules is recommended for reliable scanning.");
+    if(msgs.length){
+      info.textContent = msgs.join(" ");
+      info.classList.add("show");
+    }else{
+      info.classList.remove("show");
+    }
+  }
+
+  /* ---------------- SVG export ---------------- */
+  function svgRoundedRect(x, y, w, h, r){
+    return '<rect x="' + x.toFixed(2) + '" y="' + y.toFixed(2) + '" width="' + w.toFixed(2) +
+           '" height="' + h.toFixed(2) + '"' + (r > 0 ? ' rx="' + r.toFixed(2) + '"' : '') + '/>';
+  }
+  function buildSvg(){
+    if(!qr) return null;
+    const n = qr.getModuleCount();
+    const S = state.size;
+    const total = n + state.quiet * 2;
+    const m = S / total;
+    const off = state.quiet * m;
+    const parts = [];
+    parts.push('<svg xmlns="http://www.w3.org/2000/svg" width="' + S + '" height="' + S + '" viewBox="0 0 ' + S + ' ' + S + '">');
+    if(state.gradient){
+      parts.push('<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+        '<stop offset="0" stop-color="' + state.fg + '"/><stop offset="1" stop-color="' + state.fg2 + '"/>' +
+        '</linearGradient></defs>');
+    }
+    if(!state.transparent) parts.push('<rect width="' + S + '" height="' + S + '" fill="' + state.bg + '"/>');
+    const fgRef = state.gradient ? 'url(#g)' : state.fg;
+
+    parts.push('<g fill="' + fgRef + '">');
+    for(let r = 0; r < n; r++){
+      for(let c = 0; c < n; c++){
+        if(!qr.isDark(r, c) || inFinder(r, c, n)) continue;
+        const x = off + c * m, y = off + r * m;
+        if(state.moduleShape === "dots"){
+          parts.push('<circle cx="' + (x + m / 2).toFixed(2) + '" cy="' + (y + m / 2).toFixed(2) + '" r="' + (m * 0.42).toFixed(2) + '"/>');
+        }else{
+          parts.push(svgRoundedRect(x, y, m + 0.3, m + 0.3, state.moduleShape === "rounded" ? m * 0.34 : 0));
+        }
+      }
+    }
+    // eyes: outer ring via fill-rule, then pupil
+    const eyes = [[0, 0], [n - 7, 0], [0, n - 7]];
+    for(const [ec_, er] of eyes){
+      const x = off + ec_ * m, y = off + er * m;
+      const rO = eyeRadius(7) * m, rM = eyeRadius(5) * m, rP = eyeRadius(3) * m;
+      parts.push('<path fill-rule="evenodd" d="' +
+        roundedRectD(x, y, 7 * m, 7 * m, rO) +
+        roundedRectD(x + m, y + m, 5 * m, 5 * m, rM) + '"/>');
+      parts.push(svgRoundedRect(x + 2 * m, y + 2 * m, 3 * m, 3 * m, rP));
+    }
+    parts.push('</g>');
+
+    if(state.logoImg){
+      const codePx = n * m;
+      const lw = codePx * (state.logoSize / 100);
+      const lx = (S - lw) / 2, ly = (S - lw) / 2;
+      if(state.logoPad && !state.transparent){
+        const pad = lw * 0.12;
+        parts.push('<rect x="' + (lx - pad).toFixed(2) + '" y="' + (ly - pad).toFixed(2) +
+          '" width="' + (lw + pad * 2).toFixed(2) + '" height="' + (lw + pad * 2).toFixed(2) +
+          '" rx="' + ((lw + pad * 2) * 0.18).toFixed(2) + '" fill="' + state.bg + '"/>');
+      }
+      const ratio = state.logoImg.naturalWidth / state.logoImg.naturalHeight || 1;
+      let dw = lw, dh = lw;
+      if(ratio > 1) dh = lw / ratio; else dw = lw * ratio;
+      const tmp = document.createElement("canvas");
+      tmp.width = state.logoImg.naturalWidth || 512;
+      tmp.height = state.logoImg.naturalHeight || 512;
+      tmp.getContext("2d").drawImage(state.logoImg, 0, 0);
+      parts.push('<image href="' + tmp.toDataURL("image/png") + '" x="' + (lx + (lw - dw) / 2).toFixed(2) +
+        '" y="' + (ly + (lw - dh) / 2).toFixed(2) + '" width="' + dw.toFixed(2) + '" height="' + dh.toFixed(2) + '"/>');
+    }
+    parts.push('</svg>');
+    return parts.join("");
+  }
+  function roundedRectD(x, y, w, h, r){
+    r = Math.min(r, w / 2, h / 2);
+    if(r <= 0) return "M" + x + " " + y + "h" + w + "v" + h + "h" + (-w) + "Z";
+    return "M" + (x + r) + " " + y +
+      "h" + (w - 2 * r) + "a" + r + " " + r + " 0 0 1 " + r + " " + r +
+      "v" + (h - 2 * r) + "a" + r + " " + r + " 0 0 1 " + (-r) + " " + r +
+      "h" + (2 * r - w) + "a" + r + " " + r + " 0 0 1 " + (-r) + " " + (-r) +
+      "v" + (2 * r - h) + "a" + r + " " + r + " 0 0 1 " + r + " " + (-r) + "Z";
+  }
+
+  /* ---------------- Downloads ---------------- */
+  function downloadBlob(blob, name){
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+  }
+  $("btnPng").addEventListener("click", () => {
+    canvas.toBlob(b => b && downloadBlob(b, "qr-code.png"), "image/png");
+  });
+  $("btnSvg").addEventListener("click", () => {
+    const svg = buildSvg();
+    if(svg) downloadBlob(new Blob([svg], {type: "image/svg+xml"}), "qr-code.svg");
+  });
+  $("btnCopy").addEventListener("click", async () => {
+    try{
+      const blob = await new Promise(res => canvas.toBlob(res, "image/png"));
+      await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]);
+      flashButton($("btnCopy"), "Copied!");
+    }catch(e){
+      flashButton($("btnCopy"), "Copy not supported here");
+    }
+  });
+  function flashButton(btn, text){
+    const old = btn.textContent;
+    btn.textContent = text;
+    setTimeout(() => { btn.textContent = old; }, 1600);
+  }
+
+  /* ---------------- Wiring ---------------- */
+  // Tabs
+  document.querySelectorAll(".tab").forEach(t => {
+    t.addEventListener("click", () => {
+      document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x === t));
+      document.querySelectorAll(".tab-pane").forEach(p => p.hidden = p.dataset.pane !== t.dataset.tab);
+      state.tab = t.dataset.tab;
+      render();
+    });
+  });
+
+  // Text inputs — re-render on any input in the content panes
+  document.querySelectorAll(".tab-pane input, .tab-pane textarea, .tab-pane select")
+    .forEach(el => el.addEventListener("input", render));
+
+  // Colors
+  function bindColor(inputId, hexId, key){
+    $(inputId).addEventListener("input", e => {
+      state[key] = e.target.value.toUpperCase();
+      $(hexId).textContent = state[key];
+      render();
+    });
+  }
+  bindColor("fgColor", "fgHex", "fg");
+  bindColor("bgColor", "bgHex", "bg");
+  bindColor("fgColor2", "fg2Hex", "fg2");
+
+  // Preset swatch pairs [fg, bg]
+  const presets = [
+    ["#10142A", "#FFFFFF"], ["#000000", "#FFFFFF"], ["#1B33C7", "#EAF0FF"],
+    ["#0B5D3B", "#EAF7EE"], ["#7A1E86", "#FBEFFF"], ["#8A3200", "#FFF3E6"],
+    ["#FFFFFF", "#10142A"]
+  ];
+  const swWrap = $("swatches");
+  presets.forEach(([f, b]) => {
+    const btn = document.createElement("button");
+    btn.className = "swatch";
+    btn.style.background = "linear-gradient(135deg," + f + " 50%," + b + " 50%)";
+    btn.setAttribute("aria-label", "Use " + f + " on " + b);
+    btn.addEventListener("click", () => {
+      state.fg = f; state.bg = b;
+      $("fgColor").value = f; $("bgColor").value = b;
+      $("fgHex").textContent = f; $("bgHex").textContent = b;
+      render();
+    });
+    swWrap.appendChild(btn);
+  });
+
+  // Checkboxes
+  $("transparentBg").addEventListener("change", e => {
+    state.transparent = e.target.checked;
+    $("canvasWrap").classList.toggle("transparent", state.transparent);
+    render();
+  });
+  $("useGradient").addEventListener("change", e => {
+    state.gradient = e.target.checked;
+    $("gradientField").hidden = !state.gradient;
+    render();
+  });
+  $("logoPad").addEventListener("change", e => { state.logoPad = e.target.checked; render(); });
+
+  // Segmented controls
+  function bindSeg(id, key){
+    const seg = $(id);
+    seg.querySelectorAll("button").forEach(b => {
+      b.addEventListener("click", () => {
+        seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+        state[key] = b.dataset.val;
+        render();
+      });
+    });
+  }
+  bindSeg("segModule", "moduleShape");
+  bindSeg("segEyes", "eyeShape");
+
+  // Sliders
+  $("qrSize").addEventListener("input", e => {
+    state.size = +e.target.value;
+    $("qrSizeVal").textContent = state.size + " px";
+    render();
+  });
+  $("quietZone").addEventListener("input", e => {
+    state.quiet = +e.target.value;
+    $("quietZoneVal").textContent = state.quiet;
+    render();
+  });
+  $("logoSize").addEventListener("input", e => {
+    state.logoSize = +e.target.value;
+    $("logoSizeVal").textContent = state.logoSize + " %";
+    render();
+  });
+
+  // Error correction
+  $("ecLevel").addEventListener("change", e => { state.ec = e.target.value; render(); });
+
+  // Logo upload
+  const drop = $("logoDrop"), fileInput = $("logoFile");
+  drop.addEventListener("click", () => fileInput.click());
+  drop.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); fileInput.click(); } });
+  ["dragover", "dragenter"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("dragover"); }));
+  ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("dragover"); }));
+  drop.addEventListener("drop", e => {
+    const f = e.dataTransfer.files && e.dataTransfer.files[0];
+    if(f) loadLogo(f);
+  });
+  fileInput.addEventListener("change", e => {
+    const f = e.target.files && e.target.files[0];
+    if(f) loadLogo(f);
+  });
+  function loadLogo(file){
+    if(!file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        state.logoImg = img;
+        $("logoDropText").innerHTML = "";
+        const thumb = img.cloneNode();
+        $("logoDropText").appendChild(thumb);
+        $("logoDropText").appendChild(document.createTextNode(file.name));
+        $("logoActions").hidden = false;
+        // Nudge error correction up for logo reliability
+        if(state.ec === "L" || state.ec === "M"){
+          state.ec = "H";
+          $("ecLevel").value = "H";
+        }
+        render();
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+  $("logoRemove").addEventListener("click", () => {
+    state.logoImg = null;
+    fileInput.value = "";
+    $("logoDropText").textContent = "Click or drop an image here (PNG, JPG, SVG)";
+    $("logoActions").hidden = true;
+    render();
+  });
+
+  // First paint
+  render();
+})();
+</script>
+</body>
+</html>
