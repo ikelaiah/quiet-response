@@ -24,7 +24,8 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
     --panel:#FFFFFF;
     --ink:#10142A;
     --ink-soft:#5A6178;
-    --line:#DCE1EC;
+    --line:#D8DEE9;
+    --line-strong:#C8D0DF;
     --accent:#2B4BF2;
     --accent-ink:#1B33C7;
     --accent-soft:#E7EBFE;
@@ -33,31 +34,38 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
     --field:#FAFBFE;
     --check:#E4E7F0;
     --radius:14px;
+    --shadow-card:0 1px 2px rgba(16,20,42,.05),0 8px 24px rgba(16,20,42,.035);
+    --shadow-card-open:0 2px 4px rgba(16,20,42,.055),0 14px 34px rgba(16,20,42,.055);
+    --shadow-preview:0 18px 48px rgba(16,20,42,.09);
     --font-display:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
     --font-mono:"SFMono-Regular",Consolas,"Liberation Mono",ui-monospace,monospace;
     color-scheme:light;
   }
   html[data-theme="dark"]{
-    --paper:#0D1020;
-    --panel:#161A2E;
-    --ink:#E9ECF8;
-    --ink-soft:#9AA3C0;
-    --line:#2B3152;
+    --paper:#0A0E1B;
+    --panel:#141A2B;
+    --ink:#EEF1FA;
+    --ink-soft:#A0AAC5;
+    --line:rgba(157,171,207,.17);
+    --line-strong:rgba(157,171,207,.28);
     --accent:#6C83FF;
     --accent-ink:#A9B6FF;
-    --accent-soft:#232B4E;
+    --accent-soft:#222B4C;
     --warn:#F0A35C;
     --warn-soft:#3A2A17;
-    --field:#0F1326;
-    --check:#262C48;
+    --field:#0D1424;
+    --check:#252D47;
+    --shadow-card:0 1px 2px rgba(0,0,0,.2),0 10px 28px rgba(0,0,0,.12);
+    --shadow-card-open:0 2px 5px rgba(0,0,0,.24),0 16px 38px rgba(0,0,0,.18);
+    --shadow-preview:0 22px 54px rgba(0,0,0,.28);
     color-scheme:dark;
   }
-  body,.panel,.tab,.btn,.seg button,.color-input,.logo-drop,
+  body,.panel,.viewfinder,.tab,.btn,.seg button,.color-input,.logo-drop,
   input[type=text],input[type=url],input[type=email],input[type=tel],input[type=password],input[type=number],textarea,select{
-    transition:background-color .2s ease,border-color .2s ease,color .2s ease;
+    transition:background-color .2s ease,border-color .2s ease,color .2s ease,box-shadow .2s ease;
   }
   @media (prefers-reduced-motion:reduce){
-    body,.panel,.tab,.btn,.seg button,.color-input,.logo-drop,
+    body,.panel,.viewfinder,.tab,.btn,.seg button,.color-input,.logo-drop,
     input[type=text],input[type=url],input[type=email],input[type=tel],input[type=password],input[type=number],textarea,select{transition:none}
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -97,6 +105,11 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
     display:inline-flex;align-items:center;gap:7px;
   }
   .theme-toggle:hover{border-color:var(--accent);color:var(--accent-ink)}
+  .icon{width:18px;height:18px;display:block;flex:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;fill:none}
+  .theme-toggle .icon{width:17px;height:17px}
+  .theme-toggle .icon-sun{display:none}
+  html[data-theme="dark"] .theme-toggle .icon-moon{display:none}
+  html[data-theme="dark"] .theme-toggle .icon-sun{display:block}
 
   /* ---------- Layout ---------- */
   main{
@@ -132,6 +145,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
     border:1px solid var(--line);
     border-radius:var(--radius);
     padding:20px;
+    box-shadow:var(--shadow-card);
   }
   .panel + .panel{margin-top:18px}
   .panel h2{
@@ -141,22 +155,25 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
   }
   .panel h2::after{content:"";flex:1;height:1px;background:var(--line)}
   details.panel{padding:0;overflow:hidden}
+  details.panel[open]{border-color:var(--line-strong);box-shadow:var(--shadow-card-open)}
   details.panel>summary{
     list-style:none;cursor:pointer;padding:17px 20px;min-height:58px;
     display:flex;align-items:center;justify-content:space-between;gap:16px;
     color:var(--ink);font-size:.92rem;font-weight:700;
   }
   details.panel>summary::-webkit-details-marker{display:none}
-  details.panel>summary::after{content:"＋";font-size:1.1rem;color:var(--ink-soft);transition:transform .2s ease,opacity .2s ease}
-  details.panel[open]>summary::after{content:"−"}
-  details.panel.is-closing>summary::after{content:"＋";transform:rotate(-90deg)}
-  details.panel.is-opening>summary::after{content:"−";transform:rotate(90deg)}
+  details.panel>summary:hover{color:var(--accent-ink)}
+  .panel-chevron{width:20px;height:20px;flex:none;color:var(--ink-soft);transition:transform .22s cubic-bezier(.22,1,.36,1),color .2s ease}
+  details.panel>summary:hover .panel-chevron{color:var(--accent-ink)}
+  details.panel[open]>summary .panel-chevron{transform:rotate(180deg)}
+  details.panel.is-closing>summary .panel-chevron{transform:rotate(0)}
+  details.panel.is-opening>summary .panel-chevron{transform:rotate(180deg)}
   details.panel>summary small{display:block;color:var(--ink-soft);font-size:.76rem;font-weight:500;margin-top:2px}
   details.panel>.panel-body{padding:0 20px 20px;border-top:1px solid var(--line)}
   details.panel>.panel-body>:first-child{margin-top:18px}
   details.panel.panel-animating>.panel-body{overflow:hidden;will-change:height,opacity,transform}
   @media (prefers-reduced-motion:reduce){
-    details.panel>summary::after{transition:none}
+    .panel-chevron{transition:none}
     details.panel.panel-animating>.panel-body{will-change:auto}
   }
 
@@ -229,10 +246,11 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
   .swatches{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
   .swatch{
     width:36px;height:36px;border-radius:8px;cursor:pointer;
-    border:1px solid rgba(16,20,42,.15);padding:0;
+    border:1px solid var(--line-strong);padding:0;
+    transition:transform .15s ease,box-shadow .15s ease;
   }
   .swatch:hover{transform:scale(1.12)}
-  .swatch.active{outline:2.5px solid var(--accent);outline-offset:2px}
+  .swatch.active{box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--accent)}
 
   .tips{margin-top:18px}
   .tips ul{padding-left:18px}
@@ -272,9 +290,12 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
     border:1.5px dashed var(--line);border-radius:10px;
     padding:16px;text-align:center;cursor:pointer;
     color:var(--ink-soft);font-size:.86rem;background:var(--field);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:92px;
   }
   .logo-drop:hover,.logo-drop.dragover{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-soft)}
   .logo-drop img{max-width:56px;max-height:56px;display:block;margin:0 auto 8px;border-radius:8px}
+  .logo-drop .upload-icon{width:25px;height:25px;color:var(--accent-ink)}
+  .logo-drop.has-logo>.upload-icon{display:none}
   .logo-actions{display:flex;gap:8px;margin-top:10px}
   .logo-actions[hidden]{display:none}
 
@@ -286,6 +307,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
     background:var(--panel);
     border:1px solid var(--line);
     padding:26px;
+    box-shadow:var(--shadow-preview);
   }
   .viewfinder::before,.viewfinder::after,
   .vf-corner::before,.vf-corner::after{
@@ -306,13 +328,15 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
       linear-gradient(45deg,var(--check) 25%,transparent 25%,transparent 75%,var(--check) 75%);
     background-size:18px 18px;background-position:0 0,9px 9px;
   }
-  #qrCanvas{width:100%;height:auto;display:block}
+  #qrCanvas{width:100%;height:auto;display:block;opacity:1;transform:scale(1);transition:opacity .24s ease,transform .3s cubic-bezier(.22,1,.36,1)}
+  .canvas-wrap.empty #qrCanvas{opacity:0;transform:scale(.985)}
   .scanline{
     position:absolute;left:0;right:0;top:-8%;height:8%;
     background:linear-gradient(to bottom,transparent,rgba(43,75,242,.09),transparent);
     animation:scan 4s ease-in-out 3;
-    pointer-events:none;
+    pointer-events:none;transition:opacity .2s ease;
   }
+  .canvas-wrap.empty .scanline{opacity:0}
   @keyframes scan{0%,100%{top:-8%}50%{top:100%}}
   @media (prefers-reduced-motion:reduce){
     .scanline{display:none}
@@ -339,9 +363,11 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
   .reliability-state{font-size:.78rem;font-weight:700;color:var(--ink-soft);text-align:right;overflow-wrap:anywhere}
   .reliability ul{margin:8px 0 0 18px;color:var(--ink-soft);font-size:.78rem}
   .reliability li+li{margin-top:4px}
-  .empty-preview{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:24px;color:var(--ink-soft);font-weight:700;line-height:1.4;background:var(--field)}
+  .empty-preview{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:13px;text-align:center;padding:24px;color:var(--ink-soft);line-height:1.4;background:var(--field);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .22s ease,visibility 0s linear .22s}
+  .empty-preview-icon{width:54px;height:54px;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--accent);box-shadow:var(--shadow-card)}
+  .empty-preview strong{display:block;color:var(--ink);font-size:.92rem}
   .empty-preview small{display:block;font-weight:500;font-size:.76rem;margin-top:4px}
-  .canvas-wrap:not(.empty) .empty-preview{display:none}
+  .canvas-wrap.empty .empty-preview{opacity:1;visibility:visible;transition-delay:0s}
   .notice{
     display:none;margin-top:12px;padding:9px 12px;border-radius:9px;
     font-size:.82rem;font-weight:500;
@@ -356,6 +382,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
     font:inherit;font-weight:600;font-size:.9rem;
     min-height:44px;padding:11px 14px;border-radius:10px;cursor:pointer;
     border:1px solid var(--line);background:var(--panel);color:var(--ink);
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
   }
   .btn:hover{border-color:var(--ink)}
   .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
@@ -379,8 +406,13 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
     .swatch{width:44px;height:44px}
     .size-custom{grid-template-columns:1fr 100px}
     .mobile-bar .btn{font-size:.76rem}
+    .mobile-bar .btn .icon{width:16px;height:16px}
     .reliability-head{align-items:flex-start;flex-wrap:wrap}
     .reliability-state{margin-left:auto}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    #qrCanvas,.empty-preview,.scanline,.swatch{transition:none}
   }
 
   footer{
@@ -404,7 +436,11 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
   </div>
   <div class="header-right">
     <span class="header-note">fully offline · no tracking · nothing leaves this page</span>
-    <button class="theme-toggle" id="themeToggle" aria-pressed="false" aria-label="Switch to dark theme">☾ Dark</button>
+    <button class="theme-toggle" id="themeToggle" aria-pressed="false" aria-label="Switch to dark theme">
+      <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.3A8.5 8.5 0 0 1 9.7 3.5 8.5 8.5 0 1 0 20.5 14.3Z"/></svg>
+      <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
+      <span id="themeLabel">Dark</span>
+    </button>
   </div>
 </header>
 
@@ -532,7 +568,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
     </section>
 
     <details class="panel" id="appearancePanel">
-      <summary><span>Customize appearance<small>Colors, gradients and module shapes</small></span></summary>
+      <summary><span>Customize appearance<small>Colors, gradients and module shapes</small></span><svg class="icon panel-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
       <div class="panel-body">
       <div class="color-grid">
         <div>
@@ -582,9 +618,10 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
     </details>
 
     <details class="panel" id="logoPanel">
-      <summary><span>Add a logo<small>Place a local image in the centre</small></span></summary>
+      <summary><span>Add a logo<small>Place a local image in the centre</small></span><svg class="icon panel-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
       <div class="panel-body">
       <div class="logo-drop" id="logoDrop" tabindex="0" role="button" aria-label="Upload a center logo">
+        <svg class="icon upload-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>
         <span id="logoDropText">Click or drop an image here (PNG, JPG, SVG)</span>
       </div>
       <input type="file" id="logoFile" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden>
@@ -604,7 +641,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
     </details>
 
     <details class="panel" id="framePanel">
-      <summary><span>Add a frame<small>Optional color and call-to-action label</small></span></summary>
+      <summary><span>Add a frame<small>Optional color and call-to-action label</small></span><svg class="icon panel-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
       <div class="panel-body">
       <label class="checkline"><input type="checkbox" id="frameOn"> Add a colored frame with a label</label>
       <div id="frameFields" hidden>
@@ -627,7 +664,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
     </details>
 
     <details class="panel" id="outputPanel">
-      <summary><span>Advanced export<small>Dimensions, quiet zone and recovery level</small></span></summary>
+      <summary><span>Advanced export<small>Dimensions, quiet zone and recovery level</small></span><svg class="icon panel-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
       <div class="panel-body">
       <div class="field">
         <label>Image width</label>
@@ -675,7 +712,10 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
       <div class="vf-corner" aria-hidden="true"></div>
       <div class="canvas-wrap empty" id="canvasWrap">
         <canvas id="qrCanvas" width="1024" height="1024" role="img" aria-label="No QR code generated yet"></canvas>
-        <div class="empty-preview" id="emptyPreview"><div>Start with your content<small>Your QR code will appear here instantly.</small></div></div>
+        <div class="empty-preview" id="emptyPreview" aria-live="polite">
+          <svg class="icon empty-preview-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path d="M14 14h2v2h-2zM18 14h2v4h-2zM14 18h4v2h-4z"/></svg>
+          <div><strong id="emptyTitle">Start with your content</strong><small id="emptyHint">Your QR code will appear here instantly.</small></div>
+        </div>
         <div class="scanline" aria-hidden="true"></div>
       </div>
       <div class="reliability" id="reliability" aria-live="polite">
@@ -697,16 +737,16 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
       <div class="notice warn" id="noticeError" role="alert"></div>
       <div class="notice info" id="noticeInfo" role="status"></div>
       <div class="actions">
-        <button class="btn primary" id="btnPng">Download PNG</button>
-        <button class="btn" id="btnSvg">Download SVG</button>
-        <button class="btn" id="btnCopy">Copy image</button>
-        <button class="btn" id="btnShare" hidden>Share QR</button>
+        <button class="btn primary" id="btnPng"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>Download PNG</button>
+        <button class="btn" id="btnSvg"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v5h5"/><path d="m10 13-2 2 2 2M14 13l2 2-2 2"/></svg>Download SVG</button>
+        <button class="btn" id="btnCopy"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>Copy image</button>
+        <button class="btn" id="btnShare" hidden><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.5M8.2 13.2l7.6 4.5"/></svg>Share QR</button>
       </div>
       <p class="helper-note" id="copyHelp" hidden>Image copying requires a secure HTTPS page in this browser. PNG download still works.</p>
     </div>
 
     <details class="panel tips">
-      <summary><span>Before you print<small>Five quick checks for reliable results</small></span></summary>
+      <summary><span>Before you print<small>Five quick checks for reliable results</small></span><svg class="icon panel-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
       <div class="panel-body">
       <ul>
         <li><strong>Test with a real phone camera</strong> — especially before a big print run.</li>
@@ -721,10 +761,10 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
 </main>
 
 <div class="mobile-bar no-share" id="mobileBar">
-  <button class="btn primary" id="mBtnPng">Download PNG</button>
-  <button class="btn" id="mBtnSvg">SVG</button>
-  <button class="btn" id="mBtnCopy">Copy</button>
-  <button class="btn" id="mBtnShare" hidden>Share</button>
+  <button class="btn primary" id="mBtnPng"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>Download PNG</button>
+  <button class="btn" id="mBtnSvg"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v5h5"/></svg>SVG</button>
+  <button class="btn" id="mBtnCopy"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>Copy</button>
+  <button class="btn" id="mBtnShare" hidden><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.5M8.2 13.2l7.6 4.5"/></svg>Share</button>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -807,7 +847,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
     if(dark) document.documentElement.setAttribute("data-theme","dark");
     else document.documentElement.removeAttribute("data-theme");
     themeBtn.setAttribute("aria-pressed", dark);
-    themeBtn.textContent = dark ? "☀ Light" : "☾ Dark";
+    $("themeLabel").textContent = dark ? "Light" : "Dark";
     themeBtn.setAttribute("aria-label", dark ? "Switch to light theme" : "Switch to dark theme");
   }
   let theme = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
@@ -958,6 +998,14 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
   let currentPayload = "";
   let renderVersion = 0;
 
+  function setPreviewState(empty, title, hint){
+    $("canvasWrap").classList.toggle("empty", empty);
+    $("emptyTitle").textContent = title || "";
+    $("emptyHint").textContent = hint || "";
+    $("emptyPreview").setAttribute("aria-hidden", String(!empty));
+    canvas.setAttribute("aria-hidden", String(empty));
+  }
+
   function render(){
     const result = buildPayload();
     const payload = result.payload;
@@ -973,8 +1021,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
     ctx.clearRect(0, 0, L.W, L.H);
 
     if(result.empty){
-      $("canvasWrap").classList.add("empty");
-      $("emptyPreview").innerHTML = "<div>Start with your content<small>Your QR code will appear here instantly.</small></div>";
+      setPreviewState(true, "Start with your content", "Your QR code will appear here instantly.");
       errBox.classList.remove("show");
       $("metaModules").textContent = "— × — modules";
       $("metaVersion").textContent = "version —";
@@ -986,8 +1033,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
       return;
     }
     if(err){
-      $("canvasWrap").classList.add("empty");
-      $("emptyPreview").innerHTML = "<div>Check your content<small>Fix the highlighted field to continue.</small></div>";
+      setPreviewState(true, "Check your content", "Fix the highlighted field to continue.");
       if(qrError){ errBox.textContent = err; errBox.classList.add("show"); }
       else errBox.classList.remove("show");
       $("metaModules").textContent = "— × — modules";
@@ -999,7 +1045,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
       setReliability("risky", "Needs attention", [err]);
       return;
     }
-    $("canvasWrap").classList.remove("empty");
+    setPreviewState(false, "", "");
     errBox.classList.remove("show");
     setButtons(true);
 
@@ -1660,6 +1706,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
       const img = new Image();
       img.onload = () => {
         state.logoImg = img;
+        drop.classList.add("has-logo");
         $("logoDropText").innerHTML = "";
         const thumb = img.cloneNode();
         $("logoDropText").appendChild(thumb);
@@ -1682,6 +1729,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
   }
   function removeLogo(shouldRender = true){
     state.logoImg = null;
+    drop.classList.remove("has-logo");
     fileInput.value = "";
     $("logoDropText").textContent = "Click or drop an image here (PNG, JPG, SVG)";
     $("logoOptions").hidden = true;
