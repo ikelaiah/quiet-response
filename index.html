@@ -945,9 +945,14 @@
 
   // Preset swatch pairs [fg, bg]
   const presets = [
-    ["#10142A", "#FFFFFF"], ["#000000", "#FFFFFF"], ["#1B33C7", "#EAF0FF"],
-    ["#0B5D3B", "#EAF7EE"], ["#7A1E86", "#FBEFFF"], ["#8A3200", "#FFF3E6"],
-    ["#FFFFFF", "#10142A"]
+    ["#10142A", "#FFFFFF"],  // default ink on white
+    ["#000000", "#FFFFFF"],  // classic black on white
+    ["#0D47A1", "#E3F2FD"],  // Material Blue 900 on Blue 50
+    ["#4527A0", "#EDE7F6"],  // Material Deep Purple 800 on Deep Purple 50
+    ["#B71C1C", "#FFEBEE"],  // Material Red 900 on Red 50
+    ["#004D40", "#E0F2F1"],  // Material Teal 900 on Teal 50
+    ["#E65100", "#FFF3E0"],  // Material Orange 900 on Orange 50
+    ["#FFFFFF", "#10142A"]   // inverted: white on ink
   ];
   const swWrap = $("swatches");
   presets.forEach(([f, b]) => {
