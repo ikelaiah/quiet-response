@@ -94,7 +94,6 @@ Issues and pull requests are welcome. Some directions that would fit the spirit 
 - [ ] Fully offline build (inline the QR library)
 - [ ] More payload types (calendar events, geo links, crypto addresses)
 - [ ] Batch generation from a CSV
-- [ ] Frame templates ("Scan me" labels)
 
 ---
 
