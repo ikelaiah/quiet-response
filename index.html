@@ -185,6 +185,25 @@
     border:1px solid rgba(16,20,42,.15);padding:0;
   }
   .swatch:hover{transform:scale(1.12)}
+  .swatch.active{outline:2.5px solid var(--accent);outline-offset:2px}
+
+  .tips{margin-top:18px}
+  .tips ul{padding-left:18px}
+  .tips li{font-size:.85rem;color:var(--ink-soft);margin-bottom:7px}
+  .tips li:last-child{margin-bottom:0}
+  .tips strong{color:var(--ink);font-weight:600}
+
+  .mobile-bar{display:none}
+  @media (max-width:900px){
+    main{padding-bottom:110px}
+    .mobile-bar{
+      display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:8px;
+      position:fixed;bottom:0;left:0;right:0;z-index:50;
+      padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+      background:var(--panel);border-top:1px solid var(--line);
+    }
+    .mobile-bar .btn{font-size:.84rem;padding:10px 6px}
+  }
 
   .seg{display:flex;gap:0;border:1px solid var(--line);border-radius:9px;overflow:hidden;width:100%}
   .seg button{
@@ -208,6 +227,7 @@
   .logo-drop:hover,.logo-drop.dragover{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-soft)}
   .logo-drop img{max-width:56px;max-height:56px;display:block;margin:0 auto 8px;border-radius:8px}
   .logo-actions{display:flex;gap:8px;margin-top:10px}
+  .logo-actions[hidden]{display:none}
 
   /* ---------- Preview column ---------- */
   .preview-col{position:sticky;top:18px}
@@ -240,8 +260,8 @@
   #qrCanvas{width:100%;height:auto;display:block}
   .scanline{
     position:absolute;left:0;right:0;top:-8%;height:8%;
-    background:linear-gradient(to bottom,transparent,rgba(43,75,242,.18),transparent);
-    animation:scan 3.2s ease-in-out infinite;
+    background:linear-gradient(to bottom,transparent,rgba(43,75,242,.09),transparent);
+    animation:scan 4s ease-in-out 3;
     pointer-events:none;
   }
   @keyframes scan{0%,100%{top:-8%}50%{top:100%}}
@@ -514,6 +534,9 @@
           <option value="H">H — High (30%)</option>
         </select>
       </div>
+      <div class="field" style="margin-top:14px">
+        <button class="btn small" id="btnReset">Reset all settings</button>
+      </div>
     </section>
   </div>
 
@@ -528,6 +551,7 @@
       <div class="preview-meta">
         <span id="metaModules">— × — modules</span>
         <span id="metaVersion">version —</span>
+        <span id="metaDims">— × — px</span>
         <span id="metaChars">0 chars</span>
       </div>
       <div class="notice warn" id="noticeError" role="alert"></div>
@@ -538,8 +562,25 @@
         <button class="btn full" id="btnCopy">Copy image to clipboard</button>
       </div>
     </div>
+
+    <div class="panel tips">
+      <h2>Before you print</h2>
+      <ul>
+        <li><strong>Test with a real phone camera</strong> — especially before a big print run.</li>
+        <li>Keep the <strong>quiet zone at 4 or more</strong> for stickers and posters.</li>
+        <li><strong>Dark code on a light background</strong> scans most reliably across devices.</li>
+        <li>Matte finishes scan better than glossy — glare is the enemy of little squares.</li>
+        <li>Printing small? Shorter links make coarser, easier-to-scan codes.</li>
+      </ul>
+    </div>
   </div>
 </main>
+
+<div class="mobile-bar">
+  <button class="btn primary" id="mBtnPng">Download PNG</button>
+  <button class="btn" id="mBtnSvg">SVG</button>
+  <button class="btn" id="mBtnCopy">Copy</button>
+</div>
 
 <footer>
   Built as a single HTML file — open the source, fork it, host it anywhere.
@@ -706,6 +747,7 @@
       errBox.classList.add("show");
       $("metaModules").textContent = "— × — modules";
       $("metaVersion").textContent = "version —";
+      $("metaDims").textContent = "— × — px";
       $("metaChars").textContent = payload.length + " chars";
       setButtons(false);
       return;
@@ -740,6 +782,7 @@
     const n = qr.getModuleCount();
     $("metaModules").textContent = n + " × " + n + " modules";
     $("metaVersion").textContent = "version " + ((n - 17) / 4) + " · EC " + state.ec;
+    $("metaDims").textContent = L.W + " × " + L.H + " px";
     $("metaChars").textContent = payload.length + " chars";
     updateHints();
   }
@@ -842,9 +885,7 @@
   }
 
   function setButtons(on){
-    $("btnPng").disabled = !on;
-    $("btnSvg").disabled = !on;
-    $("btnCopy").disabled = !on;
+    ["btnPng","btnSvg","btnCopy","mBtnPng","mBtnSvg","mBtnCopy"].forEach(id => { $(id).disabled = !on; });
   }
 
   /* ---------------- Scannability hints ---------------- */
@@ -981,11 +1022,13 @@
     setTimeout(() => URL.revokeObjectURL(a.href), 3000);
   }
   $("btnPng").addEventListener("click", () => {
-    canvas.toBlob(b => b && downloadBlob(b, "qr-code.png"), "image/png");
+    canvas.toBlob(b => {
+      if(b){ downloadBlob(b, "qr-code.png"); flashButton($("btnPng"), "Downloaded ✓"); }
+    }, "image/png");
   });
   $("btnSvg").addEventListener("click", () => {
     const svg = buildSvg();
-    if(svg) downloadBlob(new Blob([svg], {type: "image/svg+xml"}), "qr-code.svg");
+    if(svg){ downloadBlob(new Blob([svg], {type: "image/svg+xml"}), "qr-code.svg"); flashButton($("btnSvg"), "Downloaded ✓"); }
   });
   $("btnCopy").addEventListener("click", async () => {
     try{
@@ -996,6 +1039,10 @@
       flashButton($("btnCopy"), "Copy not supported here");
     }
   });
+  // Mobile bar mirrors the main buttons
+  $("mBtnPng").addEventListener("click", () => $("btnPng").click());
+  $("mBtnSvg").addEventListener("click", () => $("btnSvg").click());
+  $("mBtnCopy").addEventListener("click", () => $("btnCopy").click());
   function flashButton(btn, text){
     const old = btn.textContent;
     btn.textContent = text;
@@ -1003,6 +1050,13 @@
   }
 
   /* ---------------- Wiring ---------------- */
+  // Throttle re-renders to one per animation frame (keeps 2048px redraws smooth on sliders)
+  let rafId = null;
+  function scheduleRender(){
+    if(rafId) return;
+    rafId = requestAnimationFrame(() => { rafId = null; render(); });
+  }
+
   // Tabs
   document.querySelectorAll(".tab").forEach(t => {
     t.addEventListener("click", () => {
@@ -1015,14 +1069,18 @@
 
   // Text inputs — re-render on any input in the content panes
   document.querySelectorAll(".tab-pane input, .tab-pane textarea, .tab-pane select")
-    .forEach(el => el.addEventListener("input", render));
+    .forEach(el => el.addEventListener("input", scheduleRender));
 
   // Colors
+  function clearActiveSwatches(wrapId){
+    document.querySelectorAll("#" + wrapId + " .swatch.active").forEach(s => s.classList.remove("active"));
+  }
   function bindColor(inputId, hexId, key){
     $(inputId).addEventListener("input", e => {
       state[key] = e.target.value.toUpperCase();
       $(hexId).textContent = state[key];
-      render();
+      clearActiveSwatches(inputId === "frameColor" ? "frameSwatches" : "swatches");
+      scheduleRender();
     });
   }
   bindColor("fgColor", "fgHex", "fg");
@@ -1050,6 +1108,8 @@
       state.fg = f; state.bg = b;
       $("fgColor").value = f; $("bgColor").value = b;
       $("fgHex").textContent = f; $("bgHex").textContent = b;
+      clearActiveSwatches("swatches");
+      btn.classList.add("active");
       render();
     });
     swWrap.appendChild(btn);
@@ -1074,7 +1134,7 @@
     $("frameFields").hidden = !state.frameOn;
     render();
   });
-  $("frameLabel").addEventListener("input", e => { state.frameLabel = e.target.value; render(); });
+  $("frameLabel").addEventListener("input", e => { state.frameLabel = e.target.value; scheduleRender(); });
   bindColor("frameColor", "frameHex", "frameColor");
 
   // Frame color presets — label text auto-switches between dark ink and white for contrast
@@ -1102,6 +1162,8 @@
       state.frameColor = col;
       $("frameColor").value = col;
       $("frameHex").textContent = col;
+      clearActiveSwatches("frameSwatches");
+      btn.classList.add("active");
       render();
     });
     fsWrap.appendChild(btn);
@@ -1125,17 +1187,22 @@
   $("qrSize").addEventListener("input", e => {
     state.size = +e.target.value;
     $("qrSizeVal").textContent = state.size + " px";
-    render();
+    scheduleRender();
   });
   $("quietZone").addEventListener("input", e => {
     state.quiet = +e.target.value;
     $("quietZoneVal").textContent = state.quiet;
-    render();
+    scheduleRender();
   });
   $("logoSize").addEventListener("input", e => {
     state.logoSize = +e.target.value;
     $("logoSizeVal").textContent = state.logoSize + " %";
-    render();
+    scheduleRender();
+  });
+
+  // Reset
+  $("btnReset").addEventListener("click", () => {
+    if(confirm("Reset all settings and content to defaults?")) location.reload();
   });
 
   // Error correction
