@@ -147,11 +147,18 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
     color:var(--ink);font-size:.92rem;font-weight:700;
   }
   details.panel>summary::-webkit-details-marker{display:none}
-  details.panel>summary::after{content:"＋";font-size:1.1rem;color:var(--ink-soft)}
+  details.panel>summary::after{content:"＋";font-size:1.1rem;color:var(--ink-soft);transition:transform .2s ease,opacity .2s ease}
   details.panel[open]>summary::after{content:"−"}
+  details.panel.is-closing>summary::after{content:"＋";transform:rotate(-90deg)}
+  details.panel.is-opening>summary::after{content:"−";transform:rotate(90deg)}
   details.panel>summary small{display:block;color:var(--ink-soft);font-size:.76rem;font-weight:500;margin-top:2px}
   details.panel>.panel-body{padding:0 20px 20px;border-top:1px solid var(--line)}
   details.panel>.panel-body>:first-child{margin-top:18px}
+  details.panel.panel-animating>.panel-body{overflow:hidden;will-change:height,opacity,transform}
+  @media (prefers-reduced-motion:reduce){
+    details.panel>summary::after{transition:none}
+    details.panel.panel-animating>.panel-body{will-change:auto}
+  }
 
   /* ---------- Tabs ---------- */
   .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;min-width:0}
@@ -1682,6 +1689,72 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
   }
   $("logoRemove").addEventListener("click", () => removeLogo(true));
 
+  /* ---------------- Collapsible panel motion ---------------- */
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  function bindPanelMotion(details){
+    const summary = details.querySelector(":scope > summary");
+    const body = details.querySelector(":scope > .panel-body");
+    if(!summary || !body) return;
+
+    let animation = null;
+    let intendedOpen = details.open;
+
+    summary.addEventListener("click", event => {
+      if(reducedMotion.matches || typeof body.animate !== "function") return;
+      event.preventDefault();
+
+      intendedOpen = animation ? !intendedOpen : !details.open;
+      let startHeight = details.open ? body.getBoundingClientRect().height : 0;
+      let startOpacity = details.open ? parseFloat(getComputedStyle(body).opacity) : 0;
+      let startTransform = details.open ? getComputedStyle(body).transform : "none";
+
+      if(animation){
+        animation.onfinish = null;
+        animation.cancel();
+        animation = null;
+      }
+
+      if(intendedOpen && !details.open){
+        details.open = true;
+        startHeight = 0;
+        startOpacity = 0;
+        startTransform = "translateY(-6px)";
+      }
+
+      const endHeight = body.scrollHeight;
+      const opening = intendedOpen;
+      details.classList.add("panel-animating");
+      details.classList.toggle("is-opening", opening);
+      details.classList.toggle("is-closing", !opening);
+      body.style.height = startHeight + "px";
+
+      animation = body.animate([
+        {
+          height:startHeight + "px",
+          opacity:String(startOpacity),
+          transform:startTransform === "none" ? "translateY(0)" : startTransform
+        },
+        {
+          height:(opening ? endHeight : 0) + "px",
+          opacity:opening ? "1" : "0",
+          transform:opening ? "translateY(0)" : "translateY(-4px)"
+        }
+      ], {
+        duration:opening ? 260 : 200,
+        easing:opening ? "cubic-bezier(.22,1,.36,1)" : "cubic-bezier(.4,0,1,1)"
+      });
+
+      const activeAnimation = animation;
+      activeAnimation.onfinish = () => {
+        if(animation !== activeAnimation) return;
+        if(!intendedOpen) details.open = false;
+        body.style.removeProperty("height");
+        details.classList.remove("panel-animating", "is-opening", "is-closing");
+        animation = null;
+      };
+    });
+  }
+
   function applyStateToControls(){
     [["fgColor","fgHex","fg"],["bgColor","bgHex","bg"],["fgColor2","fg2Hex","fg2"],["frameColor","frameHex","frameColor"]].forEach(([picker, hex, key]) => {
       $(picker).value = state[key];
@@ -1718,6 +1791,7 @@ var qrcode=function(){function i(t,r){function a(t,r){g=function(t){for(var r=ne
   $("mobileBar").classList.toggle("no-share", !canShareFiles);
 
   applyStateToControls();
+  document.querySelectorAll("details.panel").forEach(bindPanelMotion);
   updateWifiPasswordVisibility();
   if(typeof qrcode !== "function"){
     $("noticeError").textContent = "The embedded QR engine could not start. Re-download this HTML file.";
