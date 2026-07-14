@@ -483,6 +483,7 @@
               <input type="color" id="frameColor" value="#2B4BF2" aria-label="Frame color">
               <div><div class="role">Frame</div><div class="hexval" id="frameHex">#2B4BF2</div></div>
             </div>
+            <div class="swatches" id="frameSwatches" aria-label="Preset frame colors"></div>
           </div>
           <div class="field">
             <label for="frameLabel">Label text <span class="hint">(shown under the code)</span></label>
@@ -1075,6 +1076,36 @@
   });
   $("frameLabel").addEventListener("input", e => { state.frameLabel = e.target.value; render(); });
   bindColor("frameColor", "frameHex", "frameColor");
+
+  // Frame color presets — label text auto-switches between dark ink and white for contrast
+  const framePresets = [
+    ["#2B4BF2", "Cobalt (default)"],
+    ["#10142A", "Ink navy"],
+    ["#000000", "Black"],
+    ["#0D47A1", "Material Blue 900"],
+    ["#B71C1C", "Material Red 900"],
+    ["#1B5E20", "Material Green 900"],
+    ["#004D40", "Material Teal 900"],
+    ["#E65100", "Material Orange 900"],
+    ["#4527A0", "Material Deep Purple 800"],
+    ["#FFC107", "Material Amber 500"],
+    ["#FFFFFF", "White"]
+  ];
+  const fsWrap = $("frameSwatches");
+  framePresets.forEach(([col, name]) => {
+    const btn = document.createElement("button");
+    btn.className = "swatch";
+    btn.style.background = col;
+    btn.title = name;
+    btn.setAttribute("aria-label", "Frame color " + name);
+    btn.addEventListener("click", () => {
+      state.frameColor = col;
+      $("frameColor").value = col;
+      $("frameHex").textContent = col;
+      render();
+    });
+    fsWrap.appendChild(btn);
+  });
 
   // Segmented controls
   function bindSeg(id, key){
